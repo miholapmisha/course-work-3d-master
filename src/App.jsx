@@ -1,0 +1,34 @@
+import { Canvas } from "@react-three/fiber";
+import { Physics } from "@react-three/rapier";
+import { Suspense, useRef } from "react";
+import { Environment } from "./components/Environment";
+import { Target } from "./components/Target";
+import { CameraControls } from "./components/CameraControls";
+import { Obstacles } from "./components/Obstacles";
+import "./App.css";
+
+function App() {
+  const targetRef = useRef();
+
+  return (
+    <div id="canvas-container">
+      <Canvas shadows camera={{ position: [0, 5, -10], fov: 50 }}>
+        <Suspense fallback={null}>
+          <Physics gravity={[0, -9.81, 0]}>
+            <Environment />
+            <Target ref={targetRef} />
+            <CameraControls targetRef={targetRef} />
+            <Obstacles />
+          </Physics>
+        </Suspense>
+      </Canvas>
+      <div className="ui-overlay">
+        <h1>Target Tracking Simulator</h1>
+        <p>Use WASD or Arrow Keys to move the target.</p>
+        <p>Crash into crates and balls to see physics in action!</p>
+      </div>
+    </div>
+  );
+}
+
+export default App;
