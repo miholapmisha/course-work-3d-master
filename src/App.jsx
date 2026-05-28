@@ -5,16 +5,19 @@ import { Environment } from "./components/Environment";
 import { Target } from "./components/Target";
 import { CameraControls } from "./components/CameraControls";
 import { Obstacles } from "./components/Obstacles";
+import { ParamPanel } from "./components/ParamPanel";
+import { useTargetParams } from "./state/useTargetParams";
 import "./App.css";
 
 function App() {
   const targetRef = useRef();
+  const gravity = useTargetParams((s) => s.gravity);
 
   return (
     <div id="canvas-container">
       <Canvas shadows camera={{ position: [0, 5, -10], fov: 50 }}>
         <Suspense fallback={null}>
-          <Physics gravity={[0, -9.81, 0]}>
+          <Physics gravity={[0, gravity, 0]}>
             <Environment />
             <Target ref={targetRef} />
             <CameraControls targetRef={targetRef} />
@@ -27,6 +30,7 @@ function App() {
         <p>Use WASD or Arrow Keys to move the target.</p>
         <p>Crash into crates and balls to see physics in action!</p>
       </div>
+      <ParamPanel />
     </div>
   );
 }

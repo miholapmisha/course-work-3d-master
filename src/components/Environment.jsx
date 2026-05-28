@@ -1,5 +1,8 @@
-import { RigidBody } from "@react-three/rapier";
+import { RigidBody, CuboidCollider } from "@react-three/rapier";
 import { Grid } from "@react-three/drei";
+
+const ARENA_HALF = 50;
+const WALL_HALF_HEIGHT = 10;
 
 export const Environment = () => {
   return (
@@ -15,34 +18,51 @@ export const Environment = () => {
       {/* Ground Plane */}
       <RigidBody type="fixed" friction={2}>
         <mesh receiveShadow position={[0, -0.5, 0]}>
-          <boxGeometry args={[100, 1, 100]} />
+          <boxGeometry args={[ARENA_HALF * 2, 1, ARENA_HALF * 2]} />
           <meshStandardMaterial color="#303030" />
         </mesh>
       </RigidBody>
 
-      {/* Boundaries (Invisible walls to keep objects inside) */}
-      <RigidBody type="fixed" position={[0, 5, -50]}>
-        <mesh visible={false}>
-          <boxGeometry args={[100, 10, 1]} />
-          <meshBasicMaterial transparent opacity={0} />
+      {/* Boundaries — explicit colliders, no mesh dependency. Visible thin
+          walls give the player a clear arena edge. */}
+      <RigidBody type="fixed" colliders={false}>
+        {/* North (+Z) */}
+        <CuboidCollider
+          args={[ARENA_HALF, WALL_HALF_HEIGHT, 0.5]}
+          position={[0, WALL_HALF_HEIGHT, ARENA_HALF]}
+        />
+        {/* South (-Z) */}
+        <CuboidCollider
+          args={[ARENA_HALF, WALL_HALF_HEIGHT, 0.5]}
+          position={[0, WALL_HALF_HEIGHT, -ARENA_HALF]}
+        />
+        {/* East (+X) */}
+        <CuboidCollider
+          args={[0.5, WALL_HALF_HEIGHT, ARENA_HALF]}
+          position={[ARENA_HALF, WALL_HALF_HEIGHT, 0]}
+        />
+        {/* West (-X) */}
+        <CuboidCollider
+          args={[0.5, WALL_HALF_HEIGHT, ARENA_HALF]}
+          position={[-ARENA_HALF, WALL_HALF_HEIGHT, 0]}
+        />
+
+        {/* Thin visible strip along each wall base for arena edge cue */}
+        <mesh position={[0, 0.25, ARENA_HALF]}>
+          <boxGeometry args={[ARENA_HALF * 2, 0.5, 0.2]} />
+          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
         </mesh>
-      </RigidBody>
-      <RigidBody type="fixed" position={[0, 5, 50]}>
-        <mesh visible={false}>
-          <boxGeometry args={[100, 10, 1]} />
-          <meshBasicMaterial transparent opacity={0} />
+        <mesh position={[0, 0.25, -ARENA_HALF]}>
+          <boxGeometry args={[ARENA_HALF * 2, 0.5, 0.2]} />
+          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
         </mesh>
-      </RigidBody>
-      <RigidBody type="fixed" position={[50, 5, 0]}>
-        <mesh visible={false}>
-          <boxGeometry args={[1, 10, 100]} />
-          <meshBasicMaterial transparent opacity={0} />
+        <mesh position={[ARENA_HALF, 0.25, 0]}>
+          <boxGeometry args={[0.2, 0.5, ARENA_HALF * 2]} />
+          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
         </mesh>
-      </RigidBody>
-      <RigidBody type="fixed" position={[-50, 5, 0]}>
-        <mesh visible={false}>
-          <boxGeometry args={[1, 10, 100]} />
-          <meshBasicMaterial transparent opacity={0} />
+        <mesh position={[-ARENA_HALF, 0.25, 0]}>
+          <boxGeometry args={[0.2, 0.5, ARENA_HALF * 2]} />
+          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
         </mesh>
       </RigidBody>
 
