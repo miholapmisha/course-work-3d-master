@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 export const DEFAULT_PARAMS = {
   acceleration: 45,
-  turnSpeed: 25,
+  turnSpeed: 27,
   maxVelocity: 22,
   linearDamping: 0.35,
   angularDamping: 5.5,
@@ -34,6 +34,6 @@ export const useTargetParams = create(
       },
       reset: () => set({ ...DEFAULT_PARAMS }),
     }),
-    { name: "target-params-v2" }
+    { name: "target-params-v3" }
   )
 );
