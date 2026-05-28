@@ -9,7 +9,7 @@ export const Target = forwardRef((props, ref) => {
   
   // Movement parameters
   const ACCELERATION = 25; // Decreased for slower, longer acceleration
-  const TURN_SPEED = 20; // Further decreased sensitivity
+  const TURN_SPEED = 17; // Further decreased sensitivity
   const MAX_VELOCITY = 15;
 
   useFrame((state, delta) => {
