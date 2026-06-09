@@ -1,0 +1,75 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.0.0">
+  <diagram id="bpmn-tuning" name="BPMN — Тюнінг параметрів моделі руху">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Lanes (no outer pool wrapper — lanes themselves form the pool) -->
+        <mxCell id="lane1" value="Користувач" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1560" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="lane2" value="ParamPanel (UI)" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="190" width="1560" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lane3" value="Zustand store" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="1560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lane4" value="Симуляція" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="530" width="1560" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Start events (two triggers) -->
+        <mxCell id="start_a" value="Рух повзунка&lt;br&gt;параметра" style="shape=ellipse;perimeter=ellipsePerimeter;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="110" y="93" width="44" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="start_b" value="Натиснуто&lt;br&gt;«Reset»" style="shape=ellipse;perimeter=ellipsePerimeter;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="93" width="44" height="44" as="geometry" />
+        </mxCell>
+
+        <!-- Tasks -->
+        <mxCell id="n4" value="⚙ onChange →&lt;br&gt;setParam(key, value)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="230" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="⚙ clamp до [min, max]&lt;br&gt;min(max, max(min, x))" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="420" y="430" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="Валідне число?&lt;br&gt;(Number.isNaN)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="650" y="420" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="⚙ Оновити стан&lt;br&gt;set({ [key]: clamped })" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="820" y="430" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="⚙ reset() →&lt;br&gt;DEFAULT_PARAMS" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="430" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" value="⚙ persist → localStorage&lt;br&gt;(target-params-v3)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="820" y="575" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" value="⚙ useFrame щокадру&lt;br&gt;читає нові значення" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="575" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- End events -->
+        <mxCell id="n12" value="Відхилено&lt;br&gt;(NaN)" style="shape=ellipse;perimeter=ellipsePerimeter;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;fontSize=11;verticalLabelPosition=top;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="690" y="355" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" value="Параметри&lt;br&gt;застосовано наживо" style="shape=ellipse;perimeter=ellipsePerimeter;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="583" width="48" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Sequence flows -->
+        <mxCell id="g1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="start_a" target="n4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="n4" target="n5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="n5" target="n6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g5" value="ні (валідне)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;fontSize=11;" edge="1" parent="1" source="n6" target="n7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g6" value="так (NaN)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="n6" target="n12"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="n7" target="n9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="start_b" target="n8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="n8" target="n9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="n9" target="n10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="n10" target="n11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

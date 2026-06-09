@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant R3F as useFrame (R3F)
+    participant T as Target
+    participant ST as useTargetParams
+    participant KB as useKeyboardControls
+    participant RB as RigidBody (Rapier)
+    participant REN as Рендерер (Three.js)
+    R3F->>T: tick(state, delta)
+    T->>ST: getState()
+    ST-->>T: параметри руху
+    T->>KB: читання keys
+    KB-->>T: {forward, backward, left, right}
+    T->>RB: rotation()
+    RB-->>T: кватерніон q
+    T->>T: forward = q · (0,0,1)
+    T->>RB: linvel()
+    RB-->>T: ‖v‖
+    alt ‖v‖ < vₘₐₓ
+        T->>RB: applyImpulse(Jₗᵢₙ)
+    end
+    opt forward/backward & left/right
+        T->>RB: applyTorqueImpulse(Jᵧ)
+    end
+    RB->>RB: solver: інтегрування + колізії
+    RB-->>REN: нові позиція / орієнтація
+    REN-->>R3F: кадр відрендерено

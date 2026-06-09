@@ -1,0 +1,36 @@
+flowchart TB
+  Start(["Початок кадру useFrame(delta)"])
+  Chk{"ref.current<br/>існує?"}
+  End(["Кінець кадру"])
+  Read["getState(): acceleration, turnSpeed, maxVelocity<br/>keys: forward / backward / left / right"]
+  Calc["q = rotation()  ·  v̂ = q · (0,0,1)<br/>currentSpeed = ‖(vx, vz)‖"]
+  Apply["applyImpulse(impulse)<br/>applyTorqueImpulse(torque)"]
+
+  Start --> Chk
+  Chk -- "ні" --> End
+  Chk -- "так" --> Read --> Calc
+  Calc --> L1
+  Calc --> R1
+
+  subgraph LIN["Лінійний імпульс"]
+    direction TB
+    L1{"forward / backward<br/>натиснуто?"}
+    L2{"currentSpeed<br/>&lt; vₘₐₓ ?"}
+    L3["impulse = ±v̂ · a · Δt"]
+    L1 -- "так" --> L2
+    L2 -- "так" --> L3
+  end
+
+  subgraph ANG["Кутовий імпульс"]
+    direction TB
+    R1{"forward/backward<br/>І left/right?"}
+    R2["k = (backward і не forward) ? −1 : +1<br/>torque.y = ±T · k · Δt"]
+    R1 -- "так" --> R2
+  end
+
+  L3 --> Apply
+  L1 -- "ні" --> Apply
+  L2 -- "ні" --> Apply
+  R2 --> Apply
+  R1 -- "ні" --> Apply
+  Apply --> End

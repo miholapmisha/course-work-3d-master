@@ -1,0 +1,57 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.0.0">
+  <diagram id="uml-packages" name="UML — Діаграма пакетів (4 шари)">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1650" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Packages (UML folder shape) -->
+        <mxCell id="pkg_ui" value="UI Layer — представлення" style="shape=folder;tabPosition=left;tabWidth=110;tabHeight=22;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="650" y="50" width="660" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_ctrl" value="Control Layer — керування" style="shape=folder;tabPosition=left;tabWidth=110;tabHeight=22;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="460" y="420" width="280" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_state" value="State Layer — стан" style="shape=folder;tabPosition=left;tabWidth=110;tabHeight=22;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="800" y="420" width="320" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_phys" value="Physics Layer — фізика" style="shape=folder;tabPosition=left;tabWidth=110;tabHeight=22;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="420" width="320" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- UI components (grid 3x2) -->
+        <mxCell id="c_env" value="Environment" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="685" y="110" width="165" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_tgt" value="Target" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="875" y="110" width="165" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_obs" value="Obstacles" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="110" width="165" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_cam" value="CameraControls" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="185" width="165" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pp" value="ParamPanel" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="970" y="185" width="165" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Lower-layer modules -->
+        <mxCell id="c_kb" value="useKeyboardControls" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="490" y="490" width="240" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="c_zs" value="useTargetParams&lt;br&gt;(Zustand + persist)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="830" y="488" width="270" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rap" value="Rapier&lt;br&gt;@react-three/rapier" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="488" width="270" height="58" as="geometry" />
+        </mxCell>
+
+        <!-- Package dependencies («use», dashed open arrow) -->
+        <mxCell id="d_ctrl" value="«use»&lt;br&gt;обробка вводу" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;exitX=0.12;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pkg_ui" target="pkg_ctrl"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="d_state" value="«use»&lt;br&gt;читання / запис&lt;br&gt;параметрів" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pkg_ui" target="pkg_state"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="d_phys" value="«use»&lt;br&gt;імпульси, колізії" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;exitX=0.88;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pkg_ui" target="pkg_phys"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,20 @@
+flowchart TD
+  subgraph UIL["UI Layer — представлення"]
+    Env["Environment"]
+    Tgt["Target"]
+    Obs["Obstacles"]
+    Cam["CameraControls"]
+    PP["ParamPanel"]
+  end
+  subgraph CL["Control Layer — керування"]
+    KB["useKeyboardControls"]
+  end
+  subgraph SL["State Layer — стан"]
+    ZS["useTargetParams<br/>(Zustand + persist)"]
+  end
+  subgraph PL["Physics Layer — фізика"]
+    RAP["Rapier<br/>@react-three/rapier"]
+  end
+  UIL -->|"обробка вводу"| CL
+  UIL -->|"читання / запис параметрів"| SL
+  UIL -->|"імпульси, колізії"| PL

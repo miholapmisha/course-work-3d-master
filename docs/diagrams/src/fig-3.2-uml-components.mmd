@@ -1,0 +1,22 @@
+flowchart TD
+  App["App.jsx<br/>(композитор)"]
+  Canvas["Canvas (R3F)"]
+  Phys["Physics<br/>(Rapier provider)"]
+  Env["Environment"]
+  Tgt["Target"]
+  Cam["CameraControls"]
+  Obs["Obstacles"]
+  PP["ParamPanel<br/>(HTML-оверлей)"]
+  KB["useKeyboardControls"]
+  ST["useTargetParams<br/>(store + persist)"]
+  App --> Canvas
+  App --> PP
+  Canvas --> Phys
+  Phys --> Env
+  Phys --> Tgt
+  Phys --> Cam
+  Phys --> Obs
+  Tgt --> KB
+  Tgt --> ST
+  PP --> ST
+  Cam -. "targetRef" .-> Tgt

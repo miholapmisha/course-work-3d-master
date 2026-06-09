@@ -1,0 +1,26 @@
+flowchart TD
+  subgraph U["Користувач"]
+    U1["Відкриває панель параметрів"]
+    U2["Рухає повзунок параметра"]
+    U3["Натискає «Reset to defaults»"]
+  end
+  subgraph UI["ParamPanel (UI-оверлей)"]
+    A1["onChange повзунка / поля"]
+    A4["Рендер оновленого значення"]
+  end
+  subgraph ST["Zustand store useTargetParams"]
+    B1["setParam(key, value)"]
+    B2{"Валідне число<br/>в межах [min, max] ?"}
+    B3["Зрізати до діапазону,<br/>оновити стан"]
+    B4["reset() → DEFAULT_PARAMS"]
+  end
+  subgraph PS["Персистентність / Симуляція"]
+    C1["persist → localStorage<br/>(target-params-v3)"]
+    C2["Наступний кадр useFrame<br/>читає нове значення"]
+  end
+  U1 --> A1
+  U2 --> A1 --> B1 --> B2
+  B2 -- "так" --> B3 --> C1 --> C2
+  B2 -- "ні (NaN)" --> A4
+  B3 --> A4
+  U3 --> B4 --> C1

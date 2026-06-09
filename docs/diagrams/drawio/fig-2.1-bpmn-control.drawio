@@ -1,0 +1,74 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.0.0">
+  <diagram id="bpmn-control" name="BPMN — Керування ціллю у сцені">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Lanes (no outer pool wrapper — lanes themselves form the pool) -->
+        <mxCell id="lane1" value="Користувач" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1790" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lane2" value="Система керування" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="1790" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="lane3" value="Фізика (Rapier)" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="1790" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="lane4" value="Рендеринг" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="460" width="1790" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Nodes -->
+        <mxCell id="e_start" value="Кадр&lt;br&gt;почато" style="shape=ellipse;perimeter=ellipsePerimeter;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="110" y="88" width="44" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="t_user" value="👤 Натиснути&lt;br&gt;WASD / стрілки" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="80" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_read" value="⚙ Зчитати клавіші +&lt;br&gt;напрямок «вперед»&lt;br&gt;= q · (0,0,1)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="400" y="225" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="g_speed" value="‖v‖ &lt; vₘₐₓ ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="650" y="220" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="t_lin" value="⚙ Лінійний імпульс" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="800" y="190" width="160" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ang" value="⚙ Кутовий імпульс&lt;br&gt;(якщо є поворот)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="262" width="180" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="t_phys" value="⚙ Rapier: інтегрування Δt&lt;br&gt;+ розв'язання колізій" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="365" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_render" value="⚙ Three.js: меш +&lt;br&gt;lerp-камера → кадр" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="495" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_end" value="Кадр на&lt;br&gt;полотні" style="shape=ellipse;perimeter=ellipsePerimeter;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;fontSize=11;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1760" y="503" width="44" height="44" as="geometry" />
+        </mxCell>
+
+        <!-- Sequence flows -->
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="e_start" target="t_user"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="t_user" target="t_read"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="t_read" target="g_speed"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f4" value="так" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;fontSize=11;" edge="1" parent="1" source="g_speed" target="t_lin"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f5" value="ні" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;fontSize=11;" edge="1" parent="1" source="g_speed" target="t_ang"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="t_lin" target="t_ang"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="t_ang" target="t_phys"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="t_phys" target="t_render"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#333333;" edge="1" parent="1" source="t_render" target="e_end"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Frame loop (association) -->
+        <mxCell id="loop" value="наступний кадр 60+ Гц" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;dashed=1;strokeColor=#999999;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_end" target="e_start">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1782" y="640" />
+              <mxPoint x="132" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,141 @@
+<mxfile host="app.diagrams.net" agent="claude-code" version="24.0.0">
+  <diagram id="uml-components" name="UML — Діаграма компонентів реалізованої системи">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="820" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== Компоненти ===== -->
+        <mxCell id="c_app" value="«component»&lt;br&gt;&lt;b&gt;App.jsx&lt;/b&gt;&lt;br&gt;композитор сцени" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="250" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="c_canvas" value="«component»&lt;br&gt;&lt;b&gt;Canvas&lt;/b&gt; (R3F)" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="595" y="190" width="180" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="c_phys" value="«component»&lt;br&gt;&lt;b&gt;Physics&lt;/b&gt;&lt;br&gt;Rapier-провайдер" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="565" y="310" width="240" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="c_env" value="«component»&lt;br&gt;&lt;b&gt;Environment&lt;/b&gt;" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="480" width="180" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c_obs" value="«component»&lt;br&gt;&lt;b&gt;Obstacles&lt;/b&gt;" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="280" y="480" width="180" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c_cam" value="«component»&lt;br&gt;&lt;b&gt;CameraControls&lt;/b&gt;" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="480" width="200" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c_tgt" value="«component»&lt;br&gt;&lt;b&gt;Target&lt;/b&gt;" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="480" width="180" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pp" value="«component»&lt;br&gt;&lt;b&gt;ParamPanel&lt;/b&gt;&lt;br&gt;HTML-оверлей" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="200" width="260" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="c_kb" value="«component»&lt;br&gt;&lt;b&gt;useKeyboardControls&lt;/b&gt;" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="740" y="660" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_st" value="«store»&lt;br&gt;&lt;b&gt;useTargetParams&lt;/b&gt;&lt;br&gt;Zustand + persist" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="470" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ls" value="«artifact»&lt;br&gt;localStorage" style="shape=module;jettyWidth=18;jettyHeight=10;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;align=center;verticalAlign=middle;spacingLeft=14;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="650" width="200" height="54" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Надані інтерфейси (lollipop) ===== -->
+        <mxCell id="if_target" value="ITargetHandle" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="721" y="560" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="if_input" value="IInput" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="841" y="580" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="if_params_l" value="IParams" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="501" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="if_params_t" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1361" y="412" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="t_params_t" value="IParams" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1386" y="412" width="70" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Композиція (◆ біля власника, дерево рендера) ===== -->
+        <mxCell id="e_app_canvas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_app" target="c_canvas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_canvas_phys" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_canvas" target="c_phys">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_app_pp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_app" target="c_pp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1370" y="97" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_phys_env" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_phys" target="c_env">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="150" y="346" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_phys_obs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_phys" target="c_obs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="625" y="410" /><mxPoint x="370" y="410" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_phys_cam" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_phys" target="c_cam">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="685" y="440" /><mxPoint x="600" y="440" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_phys_tgt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=diamondThin;startFill=1;startSize=14;endArrow=none;strokeColor=#333333;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_phys" target="c_tgt">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="745" y="445" /><mxPoint x="850" y="445" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== Ніжки наданих інтерфейсів (суцільна лінія без вістря) ===== -->
+        <mxCell id="s_tgt" style="html=1;endArrow=none;strokeColor=#333333;exitX=0.1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_tgt" target="if_target">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s_kb" style="html=1;endArrow=none;strokeColor=#333333;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_kb" target="if_input">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s_st_l" style="html=1;endArrow=none;strokeColor=#333333;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_st" target="if_params_l">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s_st_t" style="html=1;endArrow=none;strokeColor=#333333;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_st" target="if_params_t">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Потрібні інтерфейси (пунктир «use» → lollipop) ===== -->
+        <mxCell id="r_cam" value="targetRef" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.9;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_cam" target="if_target">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="680" y="569" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r_tgt_in" value="«use»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_tgt" target="if_input">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r_tgt_pa" value="«use» read" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_tgt" target="if_params_l">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r_pp_pa" value="«use» read/write" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_pp" target="if_params_t">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r_app_pa" value="«use» gravity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_app" target="if_params_t">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1100" y="119" /><mxPoint x="1100" y="421" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== Персист стану ===== -->
+        <mxCell id="e_persist" value="«persist»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_st" target="c_ls">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Легенда -->
+        <mxCell id="lg" value="&lt;b&gt;Умовні позначення:&lt;/b&gt;&lt;br&gt;«component» — React-компонент / модуль&lt;br&gt;◆── суцільна з ромбом — композиція (дерево рендера)&lt;br&gt;○ — наданий інтерфейс (provided); один інтерфейс&lt;br&gt;може зображуватись кількома позначками (IParams)&lt;br&gt;– – ▷ «use» — потрібний інтерфейс (required)&lt;br&gt;«store» — Zustand-стан, «artifact» — сховище браузера" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f9f9f9;strokeColor=#999999;align=left;verticalAlign=top;spacing=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="600" width="390" height="150" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
