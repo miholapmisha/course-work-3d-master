@@ -12,7 +12,6 @@ export const Target = forwardRef((props, ref) => {
   const angularDamping = useTargetParams((s) => s.angularDamping);
   const mass = useTargetParams((s) => s.mass);
 
-  // Live-sync Rapier body properties without remounting the RigidBody.
   useEffect(() => {
     if (!ref.current) return;
     ref.current.setLinearDamping(linearDamping);
@@ -25,8 +24,6 @@ export const Target = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (!ref.current) return;
-    // setAdditionalMass adds to the auto-computed collider mass; use it as the
-    // tunable inertia knob while keeping the base cuboid mass for stability.
     ref.current.setAdditionalMass(mass, true);
   }, [ref, mass]);
 
