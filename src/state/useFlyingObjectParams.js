@@ -16,23 +16,38 @@ export const DEFAULT_FLYING_OBJECT_PARAMS = {
   scanRate: 30,
   scanTilt: -45,
   detectHz: 30,
+  approachSpeed: 6,
+  pngGain: 3,
 };
 
 export const FLYING_OBJECT_PARAM_META = {
-  posX:     { label: "Position X",     min: -45, max: 45,  step: 1,    unit: "m" },
-  posZ:     { label: "Position Z",     min: -45, max: 45,  step: 1,    unit: "m" },
-  height:   { label: "Height",         min: 5,   max: 45,  step: 1,    unit: "m" },
-  fov:      { label: "Camera FOV",     min: 20,  max: 100, step: 1,    unit: "°" },
-  gimbalKp: { label: "Gimbal Kp",      min: 0,   max: 20,  step: 0.1,  unit: "1/s" },
-  gimbalKd: { label: "Gimbal Kd",      min: 0,   max: 2,   step: 0.01, unit: "s" },
-  maxRate:  { label: "Max slew rate",  min: 10,  max: 360, step: 5,    unit: "°/s" },
-  holdTime: { label: "Hold time",      min: 0,   max: 10,  step: 0.1,  unit: "s" },
-  scanRate: { label: "Scan rate",      min: 5,   max: 180, step: 5,    unit: "°/s" },
-  scanTilt: { label: "Scan tilt",      min: -85, max: -5,  step: 1,    unit: "°" },
-  detectHz: { label: "Detection rate", min: 1,   max: 60,  step: 1,    unit: "Hz" },
+  posX:          { label: "Position X",     min: -45, max: 45,  step: 1,    unit: "m" },
+  posZ:          { label: "Position Z",     min: -45, max: 45,  step: 1,    unit: "m" },
+  height:        { label: "Height",         min: 5,   max: 45,  step: 1,    unit: "m" },
+  fov:           { label: "Camera FOV",     min: 20,  max: 100, step: 1,    unit: "°" },
+  gimbalKp:      { label: "Gimbal Kp",      min: 0,   max: 20,  step: 0.1,  unit: "1/s" },
+  gimbalKd:      { label: "Gimbal Kd",      min: 0,   max: 2,   step: 0.01, unit: "s" },
+  maxRate:       { label: "Max slew rate",  min: 10,  max: 360, step: 5,    unit: "°/s" },
+  holdTime:      { label: "Hold time",      min: 0,   max: 10,  step: 0.1,  unit: "s" },
+  scanRate:      { label: "Scan rate",      min: 5,   max: 180, step: 5,    unit: "°/s" },
+  scanTilt:      { label: "Scan tilt",      min: -85, max: -5,  step: 1,    unit: "°" },
+  detectHz:      { label: "Detection rate", min: 1,   max: 60,  step: 1,    unit: "Hz" },
+  approachSpeed: { label: "Approach speed", min: 0,   max: 20,  step: 0.5,  unit: "m/s" },
+  pngGain:       { label: "PNG gain K",     min: 1,   max: 6,   step: 0.1,  unit: "" },
 };
 
 const VALID_MODES = Object.values(DETECT_MODES);
+
+export const droneResetEmitter = {
+  listeners: new Set(),
+  subscribe(fn) {
+    this.listeners.add(fn);
+    return () => this.listeners.delete(fn);
+  },
+  emit() {
+    this.listeners.forEach((fn) => fn());
+  },
+};
 
 export const useFlyingObjectParams = create(
   persist(
@@ -50,8 +65,12 @@ export const useFlyingObjectParams = create(
         if (!VALID_MODES.includes(mode)) return;
         set({ detectMode: mode });
       },
-      reset: () => set({ ...DEFAULT_FLYING_OBJECT_PARAMS, detectMode: DEFAULT_DETECT_MODE }),
+      reset: () => {
+        set({ ...DEFAULT_FLYING_OBJECT_PARAMS, detectMode: DEFAULT_DETECT_MODE });
+        droneResetEmitter.emit();
+      },
     }),
     { name: "flying-object-params-v1" }
   )
 );
+

@@ -1,36 +1,34 @@
 import { RigidBody } from "@react-three/rapier";
-import { useMemo } from "react";
+
+// Pre-generate obstacle positions once to keep render pure
+const INITIAL_BOXES = Array.from({ length: 30 }).map((_, i) => ({
+  id: i,
+  position: [
+    (Math.random() - 0.5) * 40,
+    Math.random() * 5 + 1,
+    (Math.random() - 0.5) * 40,
+  ],
+  rotation: [
+    Math.random() * Math.PI,
+    Math.random() * Math.PI,
+    Math.random() * Math.PI,
+  ],
+  scale: Math.random() * 1.5 + 0.5,
+}));
+
+const INITIAL_SPHERES = Array.from({ length: 15 }).map((_, i) => ({
+  id: i,
+  position: [
+    (Math.random() - 0.5) * 40,
+    Math.random() * 5 + 2,
+    (Math.random() - 0.5) * 40,
+  ],
+  radius: Math.random() * 1.5 + 0.5,
+}));
 
 export const Obstacles = () => {
-  // Generate random positions for the crates
-  const boxes = useMemo(() => {
-    return Array.from({ length: 30 }).map((_, i) => ({
-      id: i,
-      position: [
-        (Math.random() - 0.5) * 40,
-        Math.random() * 5 + 1,
-        (Math.random() - 0.5) * 40
-      ],
-      rotation: [
-        Math.random() * Math.PI,
-        Math.random() * Math.PI,
-        Math.random() * Math.PI
-      ],
-      scale: Math.random() * 1.5 + 0.5,
-    }));
-  }, []);
-
-  const spheres = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
-      id: i,
-      position: [
-        (Math.random() - 0.5) * 40,
-        Math.random() * 5 + 2,
-        (Math.random() - 0.5) * 40
-      ],
-      radius: Math.random() * 1.5 + 0.5,
-    }));
-  }, []);
+  const boxes = INITIAL_BOXES;
+  const spheres = INITIAL_SPHERES;
 
   return (
     <>
