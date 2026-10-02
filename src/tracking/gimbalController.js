@@ -29,7 +29,9 @@ export function angularError(center, { vFov, aspect }) {
 // params: { kp, kd, maxRate, scanRate, scanTilt, vFov, aspect } in rad / s.
 export function commandGimbal(gimbal, status, center, dt, params) {
   if (status === TRACKER_STATUS.SEARCH) {
-    const tiltRate = SCAN_TILT_GAIN * (params.scanTilt - gimbal.tilt);
+    // gain·dt ≤ 1 (deadbeat at most), so low detection rates cannot overshoot.
+    const gain = dt > 0 ? Math.min(SCAN_TILT_GAIN, 1 / dt) : SCAN_TILT_GAIN;
+    const tiltRate = gain * (params.scanTilt - gimbal.tilt);
     return {
       ...gimbal,
       rate: { pan: clampAbs(params.scanRate, params.maxRate), tilt: clampAbs(tiltRate, params.maxRate) },

@@ -63,6 +63,14 @@ describe("commandGimbal", () => {
     expect(gimbal.prevErr).toBeNull();
   });
 
+  it("settles the scan tilt even at a 1 Hz detection rate", () => {
+    let gimbal = createGimbal(deg(-70));
+    for (let i = 0; i < 10; i++) {
+      gimbal = integrateGimbal(commandGimbal(gimbal, SEARCH, null, 1, PARAMS), 1);
+    }
+    expect(gimbal.tilt).toBeCloseTo(PARAMS.scanTilt, 2);
+  });
+
   it("never scans faster than maxRate", () => {
     const params = { ...PARAMS, scanRate: deg(180) };
     expect(commandGimbal(createGimbal(deg(-45)), SEARCH, null, DT, params).rate.pan).toBeCloseTo(deg(90));
