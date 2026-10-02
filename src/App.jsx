@@ -3,6 +3,7 @@ import { Physics } from "@react-three/rapier";
 import { Suspense, useRef } from "react";
 import { Environment } from "./components/Environment";
 import { Target } from "./components/Target";
+import { FlyingObject } from "./components/FlyingObject";
 import { CameraControls } from "./components/CameraControls";
 import { Obstacles } from "./components/Obstacles";
 import { ParamPanels } from "./components/ParamPanels";
@@ -20,6 +21,7 @@ function App() {
           <Physics gravity={[0, gravity, 0]}>
             <Environment />
             <Target ref={targetRef} />
+            <FlyingObject targetRef={targetRef} />
             <CameraControls targetRef={targetRef} />
             <Obstacles />
           </Physics>

@@ -3,6 +3,8 @@ import { Grid } from "@react-three/drei";
 
 const ARENA_HALF = 50;
 const WALL_HALF_HEIGHT = 10;
+// Amber, not red: the PIXEL detector treats red as the target.
+const WALL_STRIP_COLOR = "#ffb300";
 
 export const Environment = () => {
   return (
@@ -50,19 +52,19 @@ export const Environment = () => {
         {/* Thin visible strip along each wall base for arena edge cue */}
         <mesh position={[0, 0.25, ARENA_HALF]}>
           <boxGeometry args={[ARENA_HALF * 2, 0.5, 0.2]} />
-          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
+          <meshStandardMaterial color={WALL_STRIP_COLOR} emissive={WALL_STRIP_COLOR} emissiveIntensity={0.3} />
         </mesh>
         <mesh position={[0, 0.25, -ARENA_HALF]}>
           <boxGeometry args={[ARENA_HALF * 2, 0.5, 0.2]} />
-          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
+          <meshStandardMaterial color={WALL_STRIP_COLOR} emissive={WALL_STRIP_COLOR} emissiveIntensity={0.3} />
         </mesh>
         <mesh position={[ARENA_HALF, 0.25, 0]}>
           <boxGeometry args={[0.2, 0.5, ARENA_HALF * 2]} />
-          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
+          <meshStandardMaterial color={WALL_STRIP_COLOR} emissive={WALL_STRIP_COLOR} emissiveIntensity={0.3} />
         </mesh>
         <mesh position={[-ARENA_HALF, 0.25, 0]}>
           <boxGeometry args={[0.2, 0.5, ARENA_HALF * 2]} />
-          <meshStandardMaterial color="#ff5252" emissive="#ff5252" emissiveIntensity={0.3} />
+          <meshStandardMaterial color={WALL_STRIP_COLOR} emissive={WALL_STRIP_COLOR} emissiveIntensity={0.3} />
         </mesh>
       </RigidBody>
 
