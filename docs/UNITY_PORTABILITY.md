@@ -1,6 +1,6 @@
 # Portability to Unity
 
-This document explains how the physics model and runtime behavior implemented in this React Three Fiber + Rapier prototype can be transferred to a Unity (C# + PhysX) project. The motivation is forward-compatibility with a future master's thesis on drone-based ground-target tracking, where Unity is a likely target engine.
+This document explains how the physics model and runtime behavior implemented in this React Three Fiber + Rapier prototype can be transferred to a Unity (C# + PhysX) project. The motivation is forward-compatibility with a future master's thesis on flying-object-based ground-target tracking, where Unity is a likely target engine.
 
 ## 1. Conceptual mapping
 
@@ -120,4 +120,4 @@ After step 3, the simulator already has feature parity with the current prototyp
 
 ## 8. Summary
 
-The prototype was intentionally built on a thin layer over a standard rigid-body solver. Every piece of physics behavior — impulse-driven locomotion, axis-locked rotation, damping-based deceleration, velocity capping — maps to a one-line PhysX equivalent. The control script in `Target.jsx` is around 50 lines; the Unity port is comparable in size. The same parameter values, in the same SI units, will produce the same gameplay feel. This makes the current course-work module a viable starting point for a Unity-based drone tracking simulator at the master's stage.
+The prototype was intentionally built on a thin layer over a standard rigid-body solver. Every piece of physics behavior — impulse-driven locomotion, axis-locked rotation, damping-based deceleration, velocity capping — maps to a one-line PhysX equivalent. The control script in `Target.jsx` is around 50 lines; the Unity port is comparable in size. The same parameter values, in the same SI units, will produce the same gameplay feel. This makes the current course-work module a viable starting point for a Unity-based flying object tracking simulator at the master's stage.

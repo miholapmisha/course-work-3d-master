@@ -6,7 +6,7 @@ It helps ensure the agent maintains consistency with the established codebase pa
 ## Project Overview
 
 **Project Name:** course-work
-**Description:** A React Three Fiber 3D simulation module designed to control a ground target within an interactive physics environment. It serves as a foundational component for a future drone tracking simulator.
+**Description:** A React Three Fiber 3D simulation module designed to control a ground target within an interactive physics environment. It serves as a foundational component for a future flying object tracking simulator.
 
 ## Technical Stack
 - **Framework:** React + Vite

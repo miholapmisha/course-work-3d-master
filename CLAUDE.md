@@ -15,7 +15,7 @@ No test suite is configured.
 
 ## Project Purpose
 
-Ground target movement simulator — a component of a future drone tracking system. The user controls a vehicle (the "target") across a 3D terrain. Built with React + Vite, Three.js rendered via React Three Fiber, and Rapier (Rust/WASM) for physics.
+Ground target movement simulator — a component of a future flying object tracking system. The user controls a vehicle (the "target") across a 3D terrain. Built with React + Vite, Three.js rendered via React Three Fiber, and Rapier (Rust/WASM) for physics.
 
 ## Architecture
 
