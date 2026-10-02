@@ -7,6 +7,7 @@ import { FlyingObject } from "./components/FlyingObject";
 import { CameraControls } from "./components/CameraControls";
 import { Obstacles } from "./components/Obstacles";
 import { ParamPanels } from "./components/ParamPanels";
+import { PovOverlay } from "./components/PovOverlay";
 import { useTargetParams } from "./state/useTargetParams";
 import "./App.css";
 
@@ -33,6 +34,7 @@ function App() {
         <p>Crash into crates and balls to see physics in action!</p>
       </div>
       <ParamPanels />
+      <PovOverlay />
     </div>
   );
 }
