@@ -5,7 +5,7 @@ import { Environment } from "./components/Environment";
 import { Target } from "./components/Target";
 import { CameraControls } from "./components/CameraControls";
 import { Obstacles } from "./components/Obstacles";
-import { ParamPanel } from "./components/ParamPanel";
+import { ParamPanels } from "./components/ParamPanels";
 import { useTargetParams } from "./state/useTargetParams";
 import "./App.css";
 
@@ -30,7 +30,7 @@ function App() {
         <p>Use WASD or Arrow Keys to move the target.</p>
         <p>Crash into crates and balls to see physics in action!</p>
       </div>
-      <ParamPanel />
+      <ParamPanels />
     </div>
   );
 }

@@ -1,7 +1,17 @@
-.param-panel {
+.param-panels {
   position: absolute;
   top: 16px;
   right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.param-panel {
+  flex-shrink: 0;
   width: 280px;
   background: rgba(20, 20, 24, 0.85);
   color: #f5f5f5;
@@ -11,7 +21,6 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   user-select: none;
-  z-index: 10;
 }
 
 .param-panel__toggle {
