@@ -9,9 +9,11 @@ npm run dev        # Start Vite dev server (HMR enabled)
 npm run build      # Production build to dist/
 npm run preview    # Preview production build locally
 npm run lint       # ESLint over all .js/.jsx files
+npm test           # Vitest unit tests (src/**/*.test.js)
+npm run test:coverage  # Tests + coverage gate (80% on src/tracking)
 ```
 
-No test suite is configured.
+Unit tests (Vitest, Node environment) cover the pure tracking logic in `src/tracking/` plus the flying object param store and overlay drawing. R3F/WebGL components are verified manually in the browser.
 
 ## Project Purpose
 
@@ -36,6 +38,9 @@ useKeyboardControls (state)
 - `<Target ref={targetRef} />` — player vehicle; `ref` is forwarded to the Rapier RigidBody
 - `<CameraControls targetRef={targetRef} />` — reads target's `translation()` and `rotation()` each frame, lerp-smoothed follow camera; renders nothing
 - `<Obstacles />` — 30 dynamic crates + 15 dynamic balls, positions randomized via `useMemo`
+- `<FlyingObject targetRef={targetRef} />` — stationary observer flying object (position only from flying object params); owns the POV FBO, runs `useFlyingObjectTracking`, renders `<FlyingObjectPov>` (drei `<Hud>` plane, bottom-left)
+
+Outside the canvas: `<ParamPanels />` (target + flying object parameter panels, top-right) and `<PovOverlay />` (HTML canvas over the POV: box, crosshair, status, GEOM/PIXEL switch).
 
 ### Target Physics Model (`src/components/Target.jsx`)
 
@@ -51,6 +56,22 @@ Movement is **impulse-based** (never direct position mutation):
 
 Returns `{ forward, backward, left, right }` booleans. Listens to `keydown`/`keyup` on `window`. Supports both WASD and Arrow Keys.
 
+### Flying Object POV Tracking (`src/hooks/useFlyingObjectTracking.js`, `src/tracking/`)
+
+Per frame (useFrame, priority 0 — drei `<Hud>` owns priority 1 and renders the main scene):
+
+```
+integrateGimbal (held rate × dt) → sync POV camera (pan/tilt, fov, position)
+  → on detection tick (detectHz, advanceDetectionClock):
+       detect (GEOM: detectByProjection + Rapier ray-cast occlusion | PIXEL: red pixels of last FBO frame)
+       → stepTracker (SEARCH → TRACKING after 3 sightings → LOST → SEARCH after holdTime)
+       → commandGimbal (SEARCH: scan | TRACKING: PD on angular error, clamped to maxRate | LOST: hold)
+       → useTrackerStore.setState
+  → render scene from POV camera into the 320×240 sRGB byte FBO (airframe hidden)
+```
+
+Gimbal convention (three.js): +pan turns LEFT, +tilt turns UP; tilt is limited to [−85°, −5°].
+
 ## Key Conventions
 
 - All 3D objects that need physics wrap their mesh in `<RigidBody>` from `@react-three/rapier`
@@ -58,3 +79,6 @@ Returns `{ forward, backward, left, right }` booleans. Listens to `keydown`/`key
 - Per-frame logic lives in `useFrame` — never in React state updates or effects
 - Camera is implemented as a render-less component (`return null`) that mutates `state.camera` imperatively inside `useFrame`
 - The `Target` component uses `forwardRef` so `App.jsx` can pass the RigidBody ref to `CameraControls`
+- `src/tracking/` is pure: no React, no scene access, no input mutation — hooks/components only wire it
+- The flying object never moves toward the target; its position comes only from flying object params
+- The red target colour is reserved: other scene objects must not be red (PIXEL detection)

@@ -85,3 +85,28 @@ To extend the panel:
 2. Read it from `useTargetParams` wherever it is consumed (e.g. `Target.jsx`, `App.jsx`).
 3. The panel renders one row per `DEFAULT_PARAMS` key automatically; no UI changes are required.
 4. Bump the persist key (`target-params-v2` → `target-params-v3`) if the change breaks back-compatibility with stored values.
+
+# Flying Object Parameters
+
+Runtime-tunable parameters of the stationary observer flying object and its gimbal camera, shown in the **Flying object parameters** panel and persisted under `flying-object-params-v1`. Source of truth: [`src/state/useFlyingObjectParams.js`](../src/state/useFlyingObjectParams.js).
+
+| Parameter | Default | Min | Max | Step | Unit | What it controls |
+|---|---|---|---|---|---|---|
+| `posX` | 0 | -45 | 45 | 1 | m | Flying object X position |
+| `posZ` | 0 | -45 | 45 | 1 | m | Flying object Z position |
+| `height` | 20 | 5 | 45 | 1 | m | Flying object altitude |
+| `fov` | 60 | 20 | 100 | 1 | ° | Vertical field of view of the POV camera (4:3) |
+| `gimbalKp` | 4 | 0 | 20 | 0.1 | 1/s | Proportional gain: slew rate per radian of angular error |
+| `gimbalKd` | 0.1 | 0 | 2 | 0.01 | s | Derivative gain on the angular error |
+| `maxRate` | 90 | 10 | 360 | 5 | °/s | Gimbal slew-rate limit (also caps scanning) |
+| `holdTime` | 1.5 | 0 | 10 | 0.1 | s | How long LOST holds the last direction before SEARCH |
+| `scanRate` | 30 | 5 | 180 | 5 | °/s | Pan speed while searching |
+| `scanTilt` | -45 | -85 | -5 | 1 | ° | Tilt used while searching |
+| `detectHz` | 30 | 1 | 60 | 1 | Hz | Detection / control update rate |
+
+`detectMode` (`geometry` | `pixel`) is switched with the GEOM/PIXEL button on the POV window.
+
+**Notes**
+- The controller updates at `detectHz` and holds its rate between updates. With period `T = 1/detectHz`, keep `gimbalKp · T` well below 2 — e.g. `Kp = 20` at `1 Hz` oscillates.
+- When the target passes almost under the flying object, pan must swing quickly (two-axis gimbal "keyhole"); if that exceeds `maxRate` the target is lost briefly.
+- While searching, the camera sees the ground only between `scanTilt ± fov/2` below the horizon, so a ring right under the flying object is not scanned (about 5 m radius at the defaults). The target spawns directly below the default flying object position: drive it a few metres away, offset the flying object (`posX`/`posZ`) or lower `scanTilt` to find it.
