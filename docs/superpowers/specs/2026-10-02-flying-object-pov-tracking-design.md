@@ -32,8 +32,11 @@
 |---|---|---|
 | `geometryDetector.js` | Проєкція 8 кутів бокса цілі на камеру, рамка, обрізана до кадру; затулення перевіряє функція, передана ззовні | `({ center, quaternion, halfExtents }, camera, isOccluded) → Detection` |
 | `pixelDetector.js` | Пошук червоних пікселів у буфері RGBA, рамка по мін/макс координатах | `(pixels: Uint8Array, width, height) → Detection` |
+| `occlusion.js` | Фабрика `isOccluded` на основі Rapier `castRay` | `(world, rapier, origin, targetHandle) → (point) → boolean` |
+| `detection.js` | Спільний контракт: `NO_DETECTION`, `makeDetection(bbox)`, `ndcRectToPixels` для оверлея | — |
 | `trackerState.js` | Автомат станів із підтвердженням і таймером утримання | `(prev: TrackerState, detection, dt, { holdTime }) → TrackerState` |
-| `gimbalController.js` | Нові кути `pan`/`tilt` для поточного стану | `(gimbal: Gimbal, status, center, dt, params) → Gimbal` |
+| `detectionClock.js` | Обмеження `dt` кадру та годинник тіків детекції | `(accumulated, frameDt, detectHz) → { accumulated, tickDt \| null }` |
+| `gimbalController.js` | `commandGimbal` на тіку детекції обирає швидкість (PD / сканування / утримання); `integrateGimbal` щокадру застосовує її; `gimbalQuaternion` дає орієнтацію камери | `commandGimbal(gimbal, status, center, dt, params) → Gimbal`, `integrateGimbal(gimbal, dt) → Gimbal` |
 
 **Контракт `Detection`** (однаковий для обох детекторів, координати NDC у [-1, 1], вісь Y угору):
 ```js
@@ -42,43 +45,49 @@
 
 **`TrackerState`:** `{ status: 'SEARCH' | 'TRACKING' | 'LOST', seenFrames: number, lostTime: number }`
 
-**`Gimbal`:** `{ pan: rad, tilt: rad, prevErrX: rad, prevErrY: rad }`
+**`Gimbal`:** `{ pan: rad, tilt: rad, rate: { pan, tilt } (rad/s), prevErr: { x, y } | null }`. Значення `null` у `prevErr` означає, що на першому тіку D-складова не рахується, тож стрибка немає. Конвенція three.js: `+pan` повертає камеру ліворуч, `+tilt` піднімає вгору.
 
 Усі функції повертають нові об'єкти й нічого не змінюють у вхідних даних.
 
 ### 2.2 Стан: `src/state/`
 
 - **`useFlyingObjectParams.js`**: Zustand-сховище з `persist` (ключ `flying-object-params-v1`), побудоване так само, як `useTargetParams.js`. Експортує `DEFAULT_FLYING_OBJECT_PARAMS`, `FLYING_OBJECT_PARAM_META`, `setParam` (з обмеженням значення діапазоном), `reset` і окремо `detectMode` з `setDetectMode`.
-- **`useTrackerStore.js`**: Zustand без `persist`: `{ status, bbox, center, detectMode }`. Записується щокадру. Оверлей читає його через `subscribe`, тож React не перерендерюється.
+- **`useTrackerStore.js`**: Zustand без `persist`: `{ status, bbox, center }`. Записується на кожному тіку детекції. Оверлей читає його через `subscribe`, тож React не перерендерюється. Режим детекції зберігається лише в `useFlyingObjectParams`.
 
 ### 2.3 Компоненти: `src/components/`
 
 - **`FlyingObject.jsx`**: корпус літального об'єкта (меш), під ним група гімбала з `PerspectiveCamera` (FOV задається параметром, кадр 4:3). Колайдера немає. Логіку запускає хук `useFlyingObjectTracking`.
 - **`useFlyingObjectTracking.js`** (`src/hooks/`): `useFrame`, що щокадру проганяє ланцюжок детекція → автомат станів → гімбал → рендер у FBO (розділ 3).
-- **`FlyingObjectPov.jsx`**: `<Hud>` з ортографічною камерою в піксельних одиницях; площина 320×240 з `fbo.texture` у лівому нижньому куті, відступ 16 px.
+- **`FlyingObjectPov.jsx`**: `<Hud>` з ортографічною камерою в піксельних одиницях; площина 320×240 з `fbo.texture` у лівому нижньому куті, відступ 16 px. Рендериться всередині `FlyingObject.jsx`, бо використовує його FBO.
+- **FBO:** `useFBO(320, 240, { type: UnsignedByteType, colorSpace: SRGBColorSpace })`. Тип байтовий, бо тип за замовчуванням (HalfFloat) не читається в `Uint8Array`. sRGB потрібен, щоб байти збігалися з тим, що видно на екрані, тож пороги детектора задаються в sRGB.
 - **`PovOverlay.jsx`**: HTML `<canvas>` 320×240, вирівняний із площиною в Hud. Малює рамку, приціл, статус і кнопку `GEOM / PIXEL`.
 
 ### 2.4 Зміни в наявних файлах
 
-- **`ParamPanel.jsx`** отримує props `{ title, store, meta }`. Ряди будуються з `Object.keys(meta)`, а не з `DEFAULT_PARAMS`, щоб нечислові поля на кшталт `detectMode` не потрапляли в слайдери. Позиціювання переходить у контейнер `.param-panels` (угорі праворуч, колонка з gap 8 px, `max-height: calc(100vh - 32px)`, `overflow-y: auto`).
+- **`ParamPanel.jsx`** стає презентаційним компонентом із props `{ title, meta, values, onChange, onReset }`. Ряди будуються з `Object.entries(meta)`, тож нечислові поля на кшталт `detectMode` у слайдери не потрапляють. Новий `ParamPanels.jsx` містить контейнер `.param-panels` (угорі праворуч, колонка з gap 8 px, `max-height: calc(100vh - 32px)`, `overflow-y: auto`) і дві обгортки, кожна з яких викликає свій store-хук. Сам хук у props не передається, бо цього не дозволяє правило React Compiler.
 - **`Environment.jsx`**: смуги стін `#ff5252` стають `#ffb300` (колір і emissive).
-- **`App.jsx`**: додаються `<FlyingObject targetRef>`, `<FlyingObjectPov>` (усередині `<Canvas>`), `<PovOverlay>`, а дві `<ParamPanel>` («Target parameters», «Flying object parameters») загортаються в контейнер.
+- **`App.jsx`**: додаються `<FlyingObject targetRef>` (усередині `<Physics>`), `<PovOverlay>` і `<ParamPanels>`.
 - **`Target.jsx`** не змінюється. Розміри цілі беруться з колайдера в рантаймі: `targetRef.current.collider(0).halfExtents()`.
 
 ## 3. Потік даних за кадр
 
 `useFlyingObjectTracking` виконується в `useFrame` з пріоритетом 0, тобто до рендера основної сцени в `<Hud>`, у якого пріоритет 1.
 
-1. **Поза цілі:** `targetRef.current.translation()` / `rotation()`. Якщо `targetRef` або світ Rapier ще не готові, кадр пропускається.
-2. **Камера гімбала:** застосувати `pan`/`tilt` з попереднього кадру і викликати `updateMatrixWorld()`.
-3. **Детекція** (у поточному режимі):
-   - **GEOM:** `geometryDetector`. `isOccluded(point)` = Rapier `castRay` від камери до точки; точка видима, якщо перше влучання належить тілу цілі (`collider.parent().handle === target.handle`). Перевіряються центр і 4 верхні кути; ціль видно, якщо видно хоча б одну точку.
-   - **PIXEL:** `gl.readRenderTargetPixels(fbo, …)` з буфера **попереднього** кадру (затримка 1 кадр, як у справжньої камери), не частіше ніж `detectHz`. Між зчитуваннями тримається останній результат. Далі `pixelDetector`, при цьому рядки перевертаються, бо в WebGL початок координат унизу ліворуч.
+Детекція і керування працюють на тіках частотою `detectHz` в **обох** режимах, як справжня камера, що повільніша за рендер. Обрана на тіку швидкість гімбала тримається до наступного тіку (zero-order hold), а кути інтегруються щокадру. Якби керування рахувалося щокадру із застарілою детекцією, ефективне підсилення зросло б у кілька разів і гімбал почав би коливатися.
+
+Кроки одного кадру:
+
+1. Якщо `targetRef` або світ Rapier ще не готові, кадр пропускається.
+2. **Гімбал:** `integrateGimbal(gimbal, clampFrameDt(delta))`.
+3. **Камера POV:** позиція береться з параметрів, орієнтація з `gimbalQuaternion(pan, tilt)`, далі `fov` і `updateMatrixWorld()`.
+4. **Тік:** `advanceDetectionClock(acc, delta, detectHz)`. Якщо тік є:
+   - **GEOM:** `geometryDetector`. `isOccluded(point)` реалізовано через Rapier `castRay` від камери до точки (`occlusion.js`). Перевіряються центр і 4 верхні кути; ціль видно, якщо видно хоча б одну з цих точок.
+   - **PIXEL:** `gl.readRenderTargetPixels(fbo, …)`. FBO ще містить **попередній** кадр (затримка 1 кадр, як у справжньої камери). Далі `pixelDetector`; рядок 0 буфера відповідає низу зображення, тобто вже збігається з віссю Y у NDC.
    - Якщо детекція кидає виняток, вважаємо `{ visible: false }` і пишемо `console.warn` не частіше ніж раз на секунду.
-4. **`trackerState`** → новий статус.
-5. **`gimbalController`** → нові `pan`/`tilt`.
-6. **Рендер POV:** приховати корпус літального об'єкта → `gl.setRenderTarget(fbo)` → `gl.render(scene, povCam)` → `gl.setRenderTarget(null)` → показати корпус. FBO 320×240.
-7. **`useTrackerStore.setState(...)`**.
+   - `stepTracker(state, detection, tickDt)` дає новий статус.
+   - `commandGimbal(gimbal, status, center, tickDt, params)` дає нову швидкість.
+   - `useTrackerStore.setState({ status, bbox, center })`.
+5. **Рендер POV:** приховати корпус літального об'єкта → `gl.setRenderTarget(fbo)` → `gl.render(scene, povCam)` → повернути попередній target → показати корпус.
 
 Далі `<Hud>` рендерить основну сцену і площину POV, а `PovOverlay` перемальовує canvas у колбеку `subscribe`.
 
@@ -88,7 +97,7 @@
 
 | Зі стану | Умова | У стан |
 |---|---|---|
-| SEARCH | ціль видно `CONFIRM_FRAMES = 3` кадри поспіль | TRACKING |
+| SEARCH | ціль видно `CONFIRM_FRAMES = 3` тіки детекції поспіль | TRACKING |
 | TRACKING | ціль не видно | LOST (`lostTime = 0`) |
 | LOST | ціль видно | TRACKING |
 | LOST | `lostTime > holdTime` | SEARCH |
@@ -97,13 +106,18 @@
 
 ### 4.2 Поведінка гімбала (`gimbalController.js`)
 
-- **SEARCH:** `pan += scanRate·dt`; `tilt` плавно (з обмеженням `maxRate`) переходить до `scanTilt`.
+`commandGimbal` на кожному тіку обирає швидкість `rate`, а `integrateGimbal` щокадру виконує `pan/tilt += rate·dt`. Після інтегрування `pan` нормалізується в (−π, π], а `tilt` обрізається до [−85°, −5°].
+
+- **SEARCH:**
+  - `rate.pan = min(scanRate, maxRate)`;
+  - `rate.tilt = SCAN_TILT_GAIN·(scanTilt − tilt)`, де `SCAN_TILT_GAIN = 2` 1/s фіксоване, незалежне від `kp`, з обмеженням `±maxRate`;
+  - `prevErr = null`.
 - **TRACKING:**
-  - похибка в кутах: `errX = atan(e.x·tan(hFov/2))`, `errY = atan(e.y·tan(vFov/2))`, де `e` = `center` у NDC, `hFov = 2·atan(tan(vFov/2)·aspect)`;
-  - `rate = kp·err + kd·(err − prevErr)/dt`, обмеження `±maxRate`;
-  - знак підібрано так, що ціль праворуч від центру повертає `pan` праворуч, а ціль вище центру піднімає `tilt`;
-  - `pan` нормалізується в (−π, π], `tilt` обрізається до [−85°, −5°].
-- **LOST:** кути не змінюються, `prevErr` обнуляється, щоб після повернення цілі не було стрибка D-складової.
+  - похибка в кутах (pinhole-модель): `errX = atan(e.x·tan(vFov/2)·aspect)`, `errY = atan(e.y·tan(vFov/2))`, де `e` = `center` у NDC;
+  - `u = kp·err + kd·(err − prevErr)/dt`; на першому тіку, коли `prevErr = null`, D-складова дорівнює 0;
+  - `rate.pan = −u.x`, `rate.tilt = +u.y`, обидві обмежені `±maxRate`; мінус потрібен тому, що в three.js `+pan` повертає ліворуч, тож ціль праворуч від центру повертає камеру праворуч;
+  - якщо `center` відсутній, поведінка така сама, як у LOST.
+- **LOST:** `rate = 0`, `prevErr = null`, тобто кути тримаються.
 
 ### 4.3 Піксельний детектор
 
@@ -124,25 +138,29 @@
 | `holdTime` | 1.5 | 0 | 10 | 0.1 | s |
 | `scanRate` | 30 | 5 | 180 | 5 | °/s |
 | `scanTilt` | −45 | −85 | −5 | 1 | ° |
-| `detectHz` | 20 | 1 | 60 | 1 | Hz |
+| `detectHz` | 30 | 1 | 60 | 1 | Hz |
 
 `detectMode`: `'geometry'` (типово) або `'pixel'`. Перемикається кнопкою в POV і зберігається разом з іншими параметрами.
 
 ## 6. Обробка помилок
 
 - Відсутня ціль, світ Rapier або FBO: кадр пропускається, без винятків.
-- Ціль позаду камери (`z` після проєкції > 1) або всі кути поза кадром: `visible: false`.
+- Ціль позаду камери (усі кути мають `z ≥ −near` у системі координат камери) або всі кути поза кадром: `visible: false`.
 - `dt` обрізається до 0.1 s, щоб після неактивної вкладки гімбал не робив стрибка.
 - Значення з панелі обмежуються діапазоном у `setParam` (як у `useTargetParams`), NaN ігнорується.
 
 ## 7. Тестування
 
 - Додаються dev-залежності `vitest` і `@vitest/coverage-v8`, скрипти `npm test` і `npm run test:coverage`.
-- Юніт-тести для чотирьох модулів `src/tracking/`, покриття не нижче 80%:
-  - **`pixelDetector`:** червоний блок дає правильну рамку і центр; пікселі `#ffa500` і `#ffb300` ігноруються; менше `MIN_PIXELS` дає `visible: false`; вісь Y перевертається.
+- Юніт-тести для всіх модулів `src/tracking/`, покриття не нижче 80%:
+  - **`detection`:** центр рамки; переведення NDC → пікселі canvas, вісь Y донизу.
+  - **`pixelDetector`:** червоний блок дає правильну рамку і центр; пікселі `#ffa500` і `#ffb300` ігноруються; менше `MIN_PIXELS` дає `visible: false`; рядок 0 буфера відповідає низу; чорний буфер або буфер неправильного розміру дає `visible: false`.
+  - **`occlusion`:** фейковий світ Rapier: немає влучання, влучання в ціль, перешкода перед точкою, влучання в саму точку, колайдер без тіла, точка в початку променя.
+  - **`detectionClock`:** накопичення, тік, обмеження великого `dt`, некоректна частота.
   - **`geometryDetector`:** справжня `THREE.PerspectiveCamera`; ціль перед камерою дає рамку навколо центру; ціль позаду не видно; ціль частково за краєм кадру дає обрізану рамку; `isOccluded` завжди `true` дає `visible: false`.
   - **`trackerState`:** усі переходи з таблиці 4.1, підтвердження за 3 кадри, скидання `seenFrames`, межа `holdTime`.
-  - **`gimbalController`:** знаки (ціль праворуч → `pan` праворуч, ціль вище → `tilt` угору); обмеження `maxRate`; межі `tilt`; нормалізація `pan`; сканування; утримання в LOST.
+  - **`gimbalController`:** знаки (ціль праворуч → `pan` праворуч, ціль вище → `tilt` угору); обмеження `maxRate`; межі `tilt`; нормалізація `pan`; сканування; утримання в LOST; замкнений контур зі справжньою камерою зводить ціль до центру; поблизу надиру значення лишаються скінченними.
+- Також тестуються `useFlyingObjectParams` (обмеження діапазоном, режим, reset) і `drawPovOverlay` (фейковий контекст canvas).
 - Компоненти (R3F/WebGL) перевіряються вручну: `npm run dev` плюс скриншот у браузері.
 - `npm run lint` і `npm run build` мають проходити без помилок.
 
@@ -160,6 +178,7 @@
 ## 9. Ризики
 
 - **Синхронне `readRenderTargetPixels` гальмує конвеєр GPU.** Пом'якшення: малий FBO і обмеження `detectHz`.
+- **Дискретне керування:** при періоді `T = 1/detectHz` контур стійкий, лише поки `kp·T` помітно менше 2. Наприклад, `kp = 20` при `1 Hz` дає коливання. Це межа, яку можна показати в записці, тому вона описується в документації, а не блокується.
 - **Підвіс біля надиру (keyhole):** коли ціль проходить майже під літальним об'єктом, `pan` має різко розвернутися, і обмеження `maxRate` може призвести до втрати цілі. Це очікувана поведінка, вона буде описана в документації.
 - **`<Hud>` з пріоритетом 1 вимикає автоматичний рендер R3F.** Сам `<Hud>` рендерить основну сцену, тому інші `useFrame` мають лишатися з пріоритетом ≤ 0.
 - **`collider(0)` цілі:** автоколайдери створюються для кожного мешу. Розміри беруться з першого (основний корпус 1×0.5×2), а перевірка затулення порівнює батьківське тіло, тому влучання в другий колайдер теж зараховується.
