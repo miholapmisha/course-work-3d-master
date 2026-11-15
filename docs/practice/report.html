@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Пояснювальна записка до звіту з практики</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 30mm;
+    @top-right { content: counter(page); font-family: "Times New Roman", serif; font-size: 14pt; vertical-align: bottom; padding-bottom: 4mm; }
+  }
+  @page :first { @top-right { content: none; } }
+
+  html { font-family: "Times New Roman", serif; font-size: 14pt; line-height: 1.5; color: #000; }
+  body { margin: 0; }
+  p { margin: 0; text-indent: 1.25cm; text-align: justify; hyphens: auto; }
+  h1 { break-before: page; font-size: 14pt; font-weight: bold; text-align: center; margin: 0 0 1em; line-height: 1.5; }
+  h2 { font-size: 14pt; font-weight: bold; text-indent: 1.25cm; margin: 0.7em 0 0.3em; break-after: avoid; }
+  sub, sup { line-height: 0; }
+
+  ul.dash, ol.num { list-style: none; margin: 0; padding: 0; }
+  ul.dash li, ol.num li { text-indent: 1.25cm; text-align: justify; }
+  ul.dash li::before { content: "– "; }
+  ol.num { counter-reset: n; }
+  ol.num li { counter-increment: n; }
+  ol.num li::before { content: counter(n) ") "; }
+  ol.refs li::before { content: counter(n) ". "; }
+
+  figure { margin: 0.5em 0; text-align: center; break-inside: avoid; }
+  figure img, figure svg { width: 14cm; max-width: 100%; display: block; margin: 0 auto; }
+  figcaption { text-align: center; text-indent: 0; margin-top: 0.2em; }
+
+  .tcap { text-indent: 0; text-align: left; margin: 0.5em 0 0.2em; break-after: avoid; }
+  .tnote { text-indent: 0; font-size: 12pt; line-height: 1.2; margin: -0.3em 0 0.5em; }
+  table { width: 100%; border-collapse: collapse; font-size: 12pt; line-height: 1.2; margin-bottom: 0.5em; break-inside: avoid; }
+  th, td { border: 0.75pt solid #000; padding: 1.5pt 4pt; vertical-align: top; }
+  th { font-weight: normal; text-align: center; vertical-align: middle; }
+  td.c { text-align: center; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; }
+
+  .formula { display: flex; align-items: center; margin: 0.25em 0; break-inside: avoid; }
+  .formula math { flex: 1; font-size: 14pt; }
+  .formula .num { width: 3.2em; text-align: right; }
+  math { font-family: "STIX Two Math", "Times New Roman", serif; }
+  .where { text-indent: 0; }
+
+  code { font-family: "Courier New", monospace; font-size: 12pt; hyphens: none; white-space: nowrap; }
+  ol.refs li { text-align: left; }
+
+  /* title page: follows the university template (positions measured from it) */
+  .title-page { position: relative; height: 250mm; line-height: 1.2; }
+  .title-page p { text-indent: 0; text-align: center; }
+  .title-page .tp-head { position: absolute; top: 4mm; left: 0; right: 0; }
+  .title-page .tp-mid { position: absolute; top: 62mm; left: 0; right: 0; font-weight: bold; }
+  .title-page .tp-people { position: absolute; top: 98mm; left: 94mm; right: 0; line-height: 1.75; }
+  .title-page .tp-people p { text-align: left; }
+  .title-page .tp-grade { position: absolute; top: 190mm; left: 0; right: 0; }
+  .title-page .tp-grade p { text-align: left; }
+  .title-page .tp-city { position: absolute; top: 243mm; left: 0; right: 0; }
+  .title-page .fill { display: inline-block; border-bottom: 0.8pt solid #000; line-height: 1.2; padding: 0 3mm; }
+  .title-page .fill.wide { min-width: 58mm; padding-left: 6mm; }
+  .title-page .blank { display: inline-block; width: 63mm; border-bottom: 1.2pt solid #000; }
+
+  /* table of contents */
+  .toc-row { display: flex; align-items: flex-end; text-indent: 0; line-height: 1.3; }
+  .toc-row .t { max-width: 88%; }
+  .toc-row.l2 .t { padding-left: 1.25cm; }
+  .toc-row .dots { flex: 1; border-bottom: 1.2pt dotted #000; margin: 0 3pt 0.3em; }
+  .toc-row .p { min-width: 1.4em; text-align: right; }
+
+  svg text { font-family: "Times New Roman", serif; }
+</style>
+</head>
+<body>
+
+<!-- ============================ ТИТУЛЬНИЙ АРКУШ ============================ -->
+<section class="title-page">
+  <div class="tp-head">
+    <p>{{ministry}}</p>
+    <p>{{university}}</p>
+    <p>{{universityName}}</p>
+    <p>{{faculty}}</p>
+  </div>
+  <div class="tp-mid">
+    <p>{{reportTitle}}</p>
+    <p>{{practiceKind}}</p>
+  </div>
+  <div class="tp-people">
+    <p>студента групи <span class="fill">{{group}}</span></p>
+    <p>спеціальності {{specialtyCode}}</p>
+    <p>«{{specialtyName}}»</p>
+    <p><span class="fill wide">{{student}}</span></p>
+    <p>Керівник практики від</p>
+    <p>вищого навчального закладу:</p>
+    <p><span class="fill wide">{{supervisor}}</span></p>
+  </div>
+  <div class="tp-grade">
+    <p>Оцінка за практику <span class="blank"></span></p>
+  </div>
+  <div class="tp-city">
+    <p>{{city}}-{{year}}</p>
+  </div>
+</section>
+
+<!-- ================================ ЗМІСТ ================================= -->
+<h1>ЗМІСТ</h1>
+{{TOC}}
+
+<!-- ================================ ВСТУП ================================= -->
+<h1>ВСТУП</h1>
+
+<p>Безпілотні літальні апарати (БпЛА) з бортовими камерами широко застосовуються для моніторингу території, охорони периметра та пошуково-рятувальних робіт [1]. Ключовою їх функцією є автоматичне виявлення рухомого наземного об'єкта, утримання його в полі зору та наближення до нього. Налагодження таких алгоритмів на реальних апаратах дороге й ризиковане, тому на ранніх етапах використовують середовища моделювання з повторюваними експериментами і точними даними про стан сцени [2, 3].</p>
+
+<p>Практику проведено у вересні 2026 року; її змістом була розробка додаткового модуля до дипломної роботи. Основою слугувала створена в курсовій роботі [4] система моделювання руху наземної цілі у тривимірному середовищі — веб-симулятор на базі React, Three.js і фізичного рушія Rapier, у якому бракувало спостерігача. Таким спостерігачем став розроблений модуль БпЛА з камерою на двоосьовому підвісі, засобами виявлення і супроводу цілі та наведенням на неї.</p>
+
+<p><b>Мета практики</b> — закріплення навичок проєктування, реалізації і тестування програмних систем шляхом розробки модуля БпЛА-спостерігача та експериментального дослідження його характеристик.</p>
+
+<p><b>Завдання практики:</b></p>
+<ol class="num">
+  <li>проаналізувати вихідну систему і сформулювати вимоги до модуля;</li>
+  <li>спроєктувати архітектуру модуля;</li>
+  <li>реалізувати геометричний і піксельний методи виявлення цілі;</li>
+  <li>реалізувати автомат станів і керування підвісом камери;</li>
+  <li>реалізувати наближення БпЛА до цілі (пропорційна навігація);</li>
+  <li>покрити обчислювальну логіку тестами не менше ніж на 80&nbsp;%;</li>
+  <li>дослідити вплив параметрів модуля на якість супроводу.</li>
+</ol>
+
+<p>Результатами практики є модуль БпЛА, інтегрований у симулятор, 81 модульний тест, програма обчислювальних експериментів з результатами та цей звіт, оформлений відповідно до ДСТУ 3008:2015 [5]. Як допоміжний інструмент використовувався ШІ-асистент Claude (Anthropic) — для обговорення проєктних рішень, підготовки чернеток коду, тестів і тексту звіту.</p>
+
+<!-- =============================== РОЗДІЛ 1 =============================== -->
+<h1>РОЗДІЛ 1<br>АНАЛІЗ І ПОСТАНОВКА ЗАДАЧІ</h1>
+
+<h2>1.1 Вихідний стан програмної системи</h2>
+
+<p>На початок практики система являла собою односторінковий веб-застосунок (збірник Vite), у якому тривимірна сцена описується декларативно засобами React Three Fiber над Three.js [12, 13], а фізика твердих тіл розраховується рушієм Rapier, скомпільованим з Rust у WebAssembly [14]. Сцена містить арену 100 × 100 м зі стінами, 30 динамічних ящиків, 15 куль і рампу. Ціль — червоне тверде тіло 1 × 0,5 × 2 м, рух якого моделюється імпульсами сили та моменту; сім параметрів руху змінюються «на льоту» через панель і зберігаються в <code>localStorage</code> за допомогою бібліотеки Zustand.</p>
+
+<p>Аналіз вихідного коду виявив такі обмеження щодо нової задачі: у сцені відсутні спостерігач і будь-які засоби «зору»; автоматизованих тестів і вимірювання покриття не було; смуги стін арени були червоними, що унеможливлює виявлення червоної цілі за кольором; панель параметрів була жорстко прив'язана до сховища параметрів цілі.</p>
+
+<h2>1.2 Постановка задачі на розробку модуля</h2>
+
+<p>Сформульовано такі функціональні вимоги до модуля:</p>
+<ol class="num">
+  <li>БпЛА розміщується над ареною в точці, положення й висота якої задаються параметрами;</li>
+  <li>камера встановлена на двоосьовому підвісі з кутами азимута ψ і нахилу θ, нахил обмежено діапазоном [−85°; −5°];</li>
+  <li>зображення з камери (POV) показується у вікні 320 × 240 пікселів з рамкою цілі, прицілом, статусом і перемикачем режиму детекції;</li>
+  <li>підтримуються два взаємозамінні режими виявлення цілі: геометричний (GEOM) і піксельний (PIXEL);</li>
+  <li>поведінка визначається автоматом станів SEARCH → TRACKING → LOST → SEARCH;</li>
+  <li>параметри БпЛА змінюються через окрему панель і зберігаються між сеансами;</li>
+  <li>після захоплення цілі БпЛА наближається до неї методом пропорційної навігації.</li>
+</ol>
+
+<p>Нефункціональні вимоги: обчислювальна логіка оформлюється як чисті функції без залежності від React і сцени, що не змінюють вхідних даних; покриття цієї логіки тестами не менше 80&nbsp;%; детекція виконується з фіксованою частотою <code>detectHz</code>, нижчою за частоту рендерингу, як у реальної камери; червоний колір у сцені зарезервовано за ціллю.</p>
+
+<!-- =============================== РОЗДІЛ 2 =============================== -->
+<h1>РОЗДІЛ 2<br>ПРОЄКТУВАННЯ МОДУЛЯ БПЛА</h1>
+
+<h2>2.1 Архітектура модуля</h2>
+
+<p>В основу архітектури покладено принцип «чисте ядро — тонка оболонка» (рисунок 2.1). Усі обчислення винесено в каталог <code>src/tracking/</code> у вигляді чистих функцій, що повертають нові об'єкти. React-компоненти й хук лише з'єднують ці функції, передаючи їм дані сцени. Завдяки цьому ядро тестується в Node.js без браузера та WebGL, а алгоритми можна перенести на інший рушій без змін.</p>
+
+<figure>
+<svg viewBox="0 0 680 430" xmlns="http://www.w3.org/2000/svg" font-size="13">
+  <defs>
+    <marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker>
+  </defs>
+  <rect x="5" y="5" width="670" height="85" rx="6" fill="#e3f2fd" stroke="#1565c0"/>
+  <text x="15" y="23" font-weight="bold">Шар представлення — src/components/</text>
+  <g fill="#fff" stroke="#1565c0">
+    <rect x="15" y="34" width="155" height="46" rx="4"/><rect x="180" y="34" width="155" height="46" rx="4"/>
+    <rect x="345" y="34" width="155" height="46" rx="4"/><rect x="510" y="34" width="155" height="46" rx="4"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="92" y="53">FlyingObject.jsx</text><text x="92" y="70" font-size="11.5">корпус, RigidBody, FBO</text>
+    <text x="257" y="53">FlyingObjectPov.jsx</text><text x="257" y="70" font-size="11.5">вікно POV у &lt;Hud&gt;</text>
+    <text x="422" y="53">PovOverlay.jsx</text><text x="422" y="70" font-size="11.5">рамка, приціл, статус</text>
+    <text x="587" y="53">ParamPanels.jsx</text><text x="587" y="70" font-size="11.5">панелі параметрів</text>
+  </g>
+
+  <rect x="5" y="110" width="330" height="80" rx="6" fill="#fff3e0" stroke="#ef6c00"/>
+  <text x="15" y="128" font-weight="bold">Оркестрація кадру — src/hooks/</text>
+  <rect x="15" y="138" width="310" height="44" rx="4" fill="#fff" stroke="#ef6c00"/>
+  <text x="170" y="156" text-anchor="middle">useFlyingObjectTracking.js</text>
+  <text x="170" y="173" text-anchor="middle" font-size="11.5">useFrame: детекція → автомат → підвіс → PNG → FBO</text>
+
+  <rect x="350" y="110" width="325" height="80" rx="6" fill="#f3e5f5" stroke="#6a1b9a"/>
+  <text x="360" y="128" font-weight="bold">Стан — src/state/ (Zustand)</text>
+  <rect x="360" y="138" width="150" height="44" rx="4" fill="#fff" stroke="#6a1b9a"/>
+  <rect x="517" y="138" width="150" height="44" rx="4" fill="#fff" stroke="#6a1b9a"/>
+  <text x="435" y="156" text-anchor="middle">useTrackerStore</text><text x="435" y="173" text-anchor="middle" font-size="11.5">статус, рамка, центр</text>
+  <text x="592" y="156" text-anchor="middle" font-size="12">useFlyingObjectParams</text><text x="592" y="173" text-anchor="middle" font-size="11.5">параметри (persist)</text>
+
+  <rect x="5" y="210" width="670" height="135" rx="6" fill="#e8f5e9" stroke="#2e7d32"/>
+  <text x="15" y="228" font-weight="bold">Чисте обчислювальне ядро — src/tracking/ (без React і сцени, покрито тестами)</text>
+  <g fill="#fff" stroke="#2e7d32">
+    <rect x="15" y="238" width="155" height="44" rx="4"/><rect x="180" y="238" width="155" height="44" rx="4"/>
+    <rect x="345" y="238" width="155" height="44" rx="4"/><rect x="510" y="238" width="155" height="44" rx="4"/>
+    <rect x="15" y="291" width="155" height="44" rx="4"/><rect x="180" y="291" width="155" height="44" rx="4"/>
+    <rect x="345" y="291" width="155" height="44" rx="4"/><rect x="510" y="291" width="155" height="44" rx="4"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="92" y="256">detection.js</text><text x="92" y="273" font-size="11.5">контракт Detection</text>
+    <text x="257" y="256">pixelDetector.js</text><text x="257" y="273" font-size="11.5">PIXEL: червоні пікселі</text>
+    <text x="422" y="256">geometryDetector.js</text><text x="422" y="273" font-size="11.5">GEOM: проєкція бокса</text>
+    <text x="587" y="256">occlusion.js</text><text x="587" y="273" font-size="11.5">затулення: castRay</text>
+    <text x="92" y="309">trackerState.js</text><text x="92" y="326" font-size="11.5">SEARCH / TRACKING / LOST</text>
+    <text x="257" y="309">detectionClock.js</text><text x="257" y="326" font-size="11.5">тіки з частотою detectHz</text>
+    <text x="422" y="309">gimbalController.js</text><text x="422" y="326" font-size="11.5">ПД-закон підвісу</text>
+    <text x="587" y="309">guidanceController.js</text><text x="587" y="326" font-size="11.5">наведення PNG</text>
+  </g>
+
+  <rect x="5" y="365" width="670" height="60" rx="6" fill="#f5f5f5" stroke="#757575"/>
+  <text x="15" y="399" font-weight="bold">Бібліотеки</text>
+  <g fill="#fff" stroke="#757575">
+    <rect x="100" y="377" width="240" height="36" rx="4"/><rect x="350" y="377" width="160" height="36" rx="4"/><rect x="520" y="377" width="145" height="36" rx="4"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="220" y="400">Three.js · React Three Fiber · drei</text>
+    <text x="430" y="400">Rapier (Rust → WASM)</text>
+    <text x="592" y="400">Zustand</text>
+  </g>
+
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#ar1)">
+    <path d="M92,80 V136"/>
+    <path d="M170,182 V208"/>
+    <path d="M325,160 H358"/>
+    <path d="M587,80 V136"/>
+    <path d="M215,345 V375"/>
+    <path d="M470,345 V375"/>
+  </g>
+  <path d="M435,138 V82" stroke="#333" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#ar1)"/>
+  <text x="441" y="104" font-size="11.5">subscribe</text>
+</svg>
+<figcaption>Рисунок 2.1 – Структура модуля БпЛА</figcaption>
+</figure>
+
+<p>Обидва детектори повертають результат в однаковому форматі <code>Detection</code>: ознаку видимості, рамку і центр цілі в нормалізованих координатах пристрою (NDC, діапазон [−1; 1]). Єдиний контракт робить детектори взаємозамінними (шаблон «Стратегія»). Параметри БпЛА зберігаються у сховищі <code>useFlyingObjectParams</code>, а стан супроводу — у <code>useTrackerStore</code>, який оверлей читає через підписку без повторного рендерингу React-дерева.</p>
+
+<h2>2.2 Конвеєр обробки кадру</h2>
+
+<p>Логіка модуля виконується в хуку <code>useFlyingObjectTracking</code> у циклі <code>useFrame</code> до рендерингу основної сцени (рисунок 2.2).</p>
+
+<figure>
+<svg viewBox="0 0 680 446" xmlns="http://www.w3.org/2000/svg" font-size="13" style="width:13cm">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker>
+  </defs>
+  <g fill="#fff" stroke="#333">
+    <rect x="20" y="8" width="300" height="38" rx="4" fill="#eceff1"/>
+    <rect x="20" y="66" width="300" height="38" rx="4"/>
+    <rect x="20" y="124" width="300" height="44" rx="4"/>
+    <polygon points="170,186 280,218 170,250 60,218" fill="#fffde7"/>
+    <rect x="20" y="282" width="300" height="38" rx="4" fill="#fff3e0"/>
+    <rect x="20" y="340" width="300" height="44" rx="4"/>
+    <rect x="20" y="402" width="300" height="38" rx="4" fill="#eceff1"/>
+    <rect x="380" y="150" width="290" height="44" rx="4" fill="#e8f5e9"/>
+    <rect x="380" y="212" width="290" height="38" rx="4" fill="#e8f5e9"/>
+    <rect x="380" y="268" width="290" height="44" rx="4" fill="#e8f5e9"/>
+    <rect x="380" y="330" width="290" height="38" rx="4" fill="#e8f5e9"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="170" y="32">Кадр рендерингу (≈ 60 Гц), Δt ≤ 0,1 с</text>
+    <text x="170" y="90">integrateGimbal: ψ, θ ← ψ, θ + ω·Δt</text>
+    <text x="170" y="142">Синхронізація POV-камери: положення</text>
+    <text x="170" y="159">БпЛА, орієнтація (ψ, θ), FOV</text>
+    <text x="170" y="215">Тік детекції?</text>
+    <text x="170" y="231" font-size="11.5">(advanceDetectionClock)</text>
+    <text x="170" y="306">stepGuidance (PNG) → setLinvel тіла БпЛА</text>
+    <text x="170" y="358">Рендер сцени з POV-камери у FBO</text>
+    <text x="170" y="375">320×240 (корпус БпЛА приховано)</text>
+    <text x="170" y="426">&lt;Hud&gt;: основна сцена + вікно POV</text>
+    <text x="525" y="168">Детекція: GEOM (проєкція + castRay)</text>
+    <text x="525" y="185">або PIXEL (червоні пікселі з FBO)</text>
+    <text x="525" y="236">stepTracker: SEARCH / TRACKING / LOST</text>
+    <text x="525" y="286">commandGimbal: нова кутова швидкість ω,</text>
+    <text x="525" y="303">що утримується до наступного тіку</text>
+    <text x="525" y="354">useTrackerStore.setState → оверлей</text>
+  </g>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#ar2)">
+    <path d="M170,46 V64"/><path d="M170,104 V122"/><path d="M170,168 V184"/>
+    <path d="M170,250 V280"/><path d="M170,320 V338"/><path d="M170,384 V400"/>
+    <path d="M280,218 H340 V172 H378"/>
+    <path d="M525,194 V210"/><path d="M525,250 V266"/><path d="M525,312 V328"/>
+    <path d="M380,349 H350 V301 H322"/>
+  </g>
+  <text x="290" y="211" font-size="12">так</text>
+  <text x="178" y="268" font-size="12">ні</text>
+</svg>
+<figcaption>Рисунок 2.2 – Конвеєр обробки одного кадру</figcaption>
+</figure>
+
+<p>Принциповим рішенням є розділення частот: кути підвісу інтегруються щокадру, а детекція і обчислення нової кутової швидкості виконуються лише на тіках частоти <code>detectHz</code>; обрана швидкість утримується до наступного тіку (екстраполятор нульового порядку). Якби закон керування обчислювався щокадру за застарілим результатом детекції, ефективне підсилення зросло б у кілька разів і підвіс почав би коливатися. Зображення камери рендериться у буфер кадру (FBO) 320 × 240 з байтовим форматом пікселів і колірним простором sRGB, тож його можна зчитати в <code>Uint8Array</code>, а значення збігаються з тим, що бачить користувач.</p>
+
+<h2>2.3 Методи виявлення цілі</h2>
+
+<p><b>Геометричний детектор (GEOM)</b> використовує точні дані сцени і слугує еталоном. Вісім вершин орієнтованого паралелепіпеда цілі, що лежать перед камерою, проєктуються в NDC матрицями виду та проєкції; рамка визначається крайніми координатами проєкцій і обрізається межами кадру. Затулення перевіряється променями рушія Rapier (<code>castRay</code>) від камери до центру цілі та чотирьох верхніх вершин; ціль видима, якщо незатуленою є хоча б одна з цих п'яти точок.</p>
+
+<p><b>Піксельний детектор (PIXEL)</b> працює лише із зображенням, як справжня бортова система. Він аналізує вміст FBO, який ще містить попередній кадр, що відтворює затримку реальної камери на один кадр. Піксель належить цілі за умови</p>
+
+<div class="formula">
+<math display="block"><mi>r</mi><mo>≥</mo><mn>80</mn><mo>,</mo><mspace width="1em"/><mi>g</mi><mo>≤</mo><mn>0,35</mn><mi>r</mi><mo>,</mo><mspace width="1em"/><mi>b</mi><mo>≤</mo><mn>0,35</mn><mi>r</mi><mo>,</mo></math>
+<span class="num">(2.1)</span>
+</div>
+
+<p class="where">де <i>r</i>, <i>g</i>, <i>b</i> — значення каналів у sRGB (0…255). Пороги підібрано так, щоб помаранчеві ящики (<i>g</i>/<i>r</i> ≈ 0,65), бурштинові стіни (<i>g</i>/<i>r</i> ≈ 0,7), сіра земля і блакитні кулі не задовольняли умову (2.1). Якщо червоних пікселів менше чотирьох, ціль вважається невидимою; інакше рамка будується за крайніми рядками і стовпцями.</p>
+
+<h2>2.4 Автомат станів супроводу</h2>
+
+<p>Поведінку модуля визначає автомат із трьома станами (рисунок 2.3). У стані SEARCH камера сканує простір за азимутом. Перехід у TRACKING відбувається після трьох послідовних тіків із видимою ціллю, що відсіює поодинокі хибні спрацьовування. Зникнення цілі переводить автомат у LOST, де підвіс утримує останній напрямок; якщо ціль не з'являється довше за <code>holdTime</code>, пошук відновлюється.</p>
+
+<figure>
+<svg viewBox="0 0 680 290" xmlns="http://www.w3.org/2000/svg" font-size="13" style="width:12.5cm">
+  <defs>
+    <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker>
+  </defs>
+  <rect x="30" y="112" width="190" height="72" rx="36" fill="#eeeeee" stroke="#616161" stroke-width="1.5"/>
+  <rect x="460" y="22" width="190" height="72" rx="36" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <rect x="460" y="200" width="190" height="72" rx="36" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/>
+  <g text-anchor="middle">
+    <text x="125" y="142" font-weight="bold" font-size="14">SEARCH</text>
+    <text x="125" y="160" font-size="11.5">сканування за азимутом,</text>
+    <text x="125" y="174" font-size="11.5">нахил → θ<tspan baseline-shift="sub" font-size="9">scan</tspan></text>
+    <text x="555" y="52" font-weight="bold" font-size="14">TRACKING</text>
+    <text x="555" y="72" font-size="11.5">ПД-закон за кутовою похибкою</text>
+    <text x="555" y="230" font-weight="bold" font-size="14">LOST</text>
+    <text x="555" y="250" font-size="11.5">утримання напрямку (ω = 0)</text>
+  </g>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#ar3)">
+    <path d="M205,124 C280,60 370,52 458,56"/>
+    <path d="M610,94 V198"/>
+    <path d="M505,200 V96"/>
+    <path d="M460,248 C370,262 270,240 210,176"/>
+    <path d="M100,112 C80,62 165,62 148,110"/>
+  </g>
+  <text x="250" y="62" font-size="12">ціль видно 3 тіки поспіль</text>
+  <text x="617" y="150" font-size="12">ціль</text>
+  <text x="617" y="165" font-size="12">не видно</text>
+  <text x="498" y="150" font-size="12" text-anchor="end">ціль</text>
+  <text x="498" y="165" font-size="12" text-anchor="end">видно</text>
+  <text x="300" y="268" font-size="12">lostTime &gt; holdTime</text>
+  <text x="124" y="54" font-size="12" text-anchor="middle">ціль не видно: seenFrames = 0</text>
+</svg>
+<figcaption>Рисунок 2.3 – Діаграма станів автомата супроводу</figcaption>
+</figure>
+
+<h2>2.5 Закон керування підвісом камери</h2>
+
+<p>Положення центру цілі в кадрі (<i>e<sub>x</sub></i>, <i>e<sub>y</sub></i>) у NDC перераховується в кутову похибку за моделлю камери-обскури [8]:</p>
+
+<div class="formula">
+<math display="block"><msub><mi>ε</mi><mi>x</mi></msub><mo>=</mo><mi>arctan</mi><mrow><mo>(</mo><msub><mi>e</mi><mi>x</mi></msub><mi>tan</mi><mfrac><msub><mi>φ</mi><mi>v</mi></msub><mn>2</mn></mfrac><mo>⋅</mo><mi>a</mi><mo>)</mo></mrow><mo>,</mo><mspace width="1.5em"/><msub><mi>ε</mi><mi>y</mi></msub><mo>=</mo><mi>arctan</mi><mrow><mo>(</mo><msub><mi>e</mi><mi>y</mi></msub><mi>tan</mi><mfrac><msub><mi>φ</mi><mi>v</mi></msub><mn>2</mn></mfrac><mo>)</mo></mrow><mo>,</mo></math>
+<span class="num">(2.2)</span>
+</div>
+
+<p class="where">де <i>φ<sub>v</sub></i> — вертикальний кут огляду, <i>a</i> = 4/3 — співвідношення сторін кадру. У стані TRACKING на кожному тіку з періодом <i>T</i> = 1/<code>detectHz</code> обчислюється ПД-закон, що є простим випадком візуального сервокерування [11]:</p>
+
+<div class="formula">
+<math display="block"><msub><mi mathvariant="bold">u</mi><mi>k</mi></msub><mo>=</mo><msub><mi>K</mi><mi>p</mi></msub><msub><mi mathvariant="bold">ε</mi><mi>k</mi></msub><mo>+</mo><msub><mi>K</mi><mi>d</mi></msub><mfrac><mrow><msub><mi mathvariant="bold">ε</mi><mi>k</mi></msub><mo>−</mo><msub><mi mathvariant="bold">ε</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><mi>T</mi></mfrac><mo>,</mo><mspace width="1.5em"/><msub><mi>ω</mi><mi>ψ</mi></msub><mo>=</mo><mo>−</mo><msub><mi>u</mi><mi>x</mi></msub><mo>,</mo><mspace width="1em"/><msub><mi>ω</mi><mi>θ</mi></msub><mo>=</mo><msub><mi>u</mi><mi>y</mi></msub><mo>,</mo></math>
+<span class="num">(2.3)</span>
+</div>
+
+<p class="where">причому швидкості обмежуються значенням ±<i>ω</i><sub>max</sub>. Знак «мінус» для азимута зумовлений конвенцією Three.js, у якій додатний азимут повертає камеру ліворуч. У стані SEARCH азимут змінюється зі швидкістю сканування, а нахил повертається до <i>θ</i><sub>scan</sub> з коефіцієнтом min(2; 1/<i>T</i>), що виключає перерегулювання за низьких частот детекції. У стані LOST швидкості нульові.</p>
+
+<p>Для нерухомої цілі камера за тік повертається на кут <i>T</i>·<i>u<sub>k</sub></i>, тому похибка задовольняє різницеве рівняння</p>
+
+<div class="formula">
+<math display="block"><msub><mi>ε</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>K</mi><mi>p</mi></msub><mi>T</mi><mo>−</mo><msub><mi>K</mi><mi>d</mi></msub><mo>)</mo><msub><mi>ε</mi><mi>k</mi></msub><mo>+</mo><msub><mi>K</mi><mi>d</mi></msub><msub><mi>ε</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo></math>
+<span class="num">(2.4)</span>
+</div>
+
+<p class="where">і критерій стійкості Джурі [9] дає умову</p>
+
+<div class="formula">
+<math display="block"><mn>0</mn><mo>&lt;</mo><msub><mi>K</mi><mi>p</mi></msub><mi>T</mi><mo>&lt;</mo><mn>2</mn><mo>−</mo><mn>2</mn><msub><mi>K</mi><mi>d</mi></msub><mo>.</mo></math>
+<span class="num">(2.5)</span>
+</div>
+
+<p class="where">За типових <i>K<sub>p</sub></i> = 4 с<sup>−1</sup>, <i>K<sub>d</sub></i> = 0,1 і 30 Гц маємо <i>K<sub>p</sub>T</i> ≈ 0,13 за межі 1,8. Для цілі, що рухається з кутовою швидкістю <i>ω</i>, контур з астатизмом першого порядку має усталену похибку</p>
+
+<div class="formula">
+<math display="block"><msub><mi>ε</mi><mtext>уст</mtext></msub><mo>=</mo><mi>ω</mi><mo>/</mo><msub><mi>K</mi><mi>p</mi></msub><mo>.</mo></math>
+<span class="num">(2.6)</span>
+</div>
+
+<h2>2.6 Наведення БпЛА методом пропорційної навігації</h2>
+
+<p>Для наближення до цілі застосовано метод пропорційної навігації (PNG), класичний для задач перехоплення [6] і адаптований для мультикоптерів у роботі [7]. Кути лінії візування (LOS) обчислюються за різницею координат цілі та БпЛА:</p>
+
+<div class="formula">
+<math display="block"><msub><mi>q</mi><mtext>az</mtext></msub><mo>=</mo><mi>atan2</mi><mo>(</mo><mi>Δ</mi><mi>x</mi><mo>,</mo><mi>Δ</mi><mi>z</mi><mo>)</mo><mo>,</mo><mspace width="1.5em"/><msub><mi>q</mi><mtext>el</mtext></msub><mo>=</mo><mi>atan2</mi><mrow><mo>(</mo><mi>Δ</mi><mi>y</mi><mo>,</mo><msqrt><mi>Δ</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>Δ</mi><msup><mi>z</mi><mn>2</mn></msup></msqrt><mo>)</mo></mrow><mo>.</mo></math>
+<span class="num">(2.7)</span>
+</div>
+
+<p class="where">Кути напрямку швидкості <i>σ</i> на першому кроці дорівнюють кутам LOS, а далі змінюються пропорційно до повороту лінії візування з навігаційною сталою <i>K</i>; бажана швидкість має модуль <i>V</i>:</p>
+
+<div class="formula">
+<math display="block"><msub><mi>σ</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>σ</mi><mi>k</mi></msub><mo>+</mo><mi>K</mi><mo>(</mo><msub><mi>q</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>q</mi><mi>k</mi></msub><mo>)</mo><mo>,</mo></math>
+<span class="num">(2.8)</span>
+</div>
+
+<div class="formula">
+<math display="block"><mi mathvariant="bold">v</mi><mo>=</mo><mi>V</mi><mo>⋅</mo><mo>(</mo><mi>cos</mi><msub><mi>σ</mi><mtext>el</mtext></msub><mi>sin</mi><msub><mi>σ</mi><mtext>az</mtext></msub><mo>;</mo><mspace width="0.3em"/><mi>sin</mi><msub><mi>σ</mi><mtext>el</mtext></msub><mo>;</mo><mspace width="0.3em"/><mi>cos</mi><msub><mi>σ</mi><mtext>el</mtext></msub><mi>cos</mi><msub><mi>σ</mi><mtext>az</mtext></msub><mo>)</mo><mo>.</mo></math>
+<span class="num">(2.9)</span>
+</div>
+
+<p class="where">За <i>K</i>&nbsp;=&nbsp;1 швидкість завжди спрямована на ціль (чисте переслідування), за <i>K</i>&nbsp;&gt;&nbsp;1 БпЛА випереджає маневр цілі. Зміна швидкості за кадр обмежена величиною <i>a</i><sub>max</sub>Δ<i>t</i> (<i>a</i><sub>max</sub> = 6 м/с<sup>2</sup>), що імітує інерційність мультикоптера; зниження нижче 0,5 м заборонено; перехоплення фіксується на відстані до 1,2 м. Наведення активне лише в стані TRACKING, в інших станах БпЛА гальмує до зависання. Тіло БпЛА є кінематичним тілом Rapier, керованим швидкістю (<code>setLinvel</code>).</p>
+
+<!-- =============================== РОЗДІЛ 3 =============================== -->
+<h1>РОЗДІЛ 3<br>РЕАЛІЗАЦІЯ МОДУЛЯ</h1>
+
+<h2>3.1 Специфікація модуля</h2>
+
+<p>Реалізації передувала специфікація модуля, що визначає мету і межі задачі, архітектуру, потік даних за кадр, таблицю переходів автомата, перелік параметрів, план тестування і вісім критеріїв приймання. Окремо в ній проаналізовано ризики: синхронне зчитування пікселів із графічного процесора, стійкість дискретного контуру, різкий розворот підвісу під час проходження цілі під БпЛА [10]. У початковій постановці БпЛА свідомо нерухомий, щоб супровід можна було налагоджувати незалежно від керування польотом; наближення до цілі реалізовано як окреме розширення (підрозділ 3.5).</p>
+
+<h2>3.2 Тестова інфраструктура та детектори</h2>
+
+<p>Ядро розроблялося за методикою TDD: спочатку тест, що не проходить, потім мінімальна реалізація і рефакторинг. До проєкту додано Vitest із провайдером покриття V8 і поріг покриття 80&nbsp;% для <code>src/tracking/</code>. Реалізовано контракт <code>Detection</code>, піксельний і геометричний детектори та перевірку затулення. Тести геометричного детектора використовують справжню камеру <code>THREE.PerspectiveCamera</code>, а затулення перевірено на фіктивному світі Rapier у шести сценаріях. Колір смуг стін змінено з червоного на бурштиновий (<code>#ffb300</code>).</p>
+
+<h2>3.3 Автомат станів, підвіс і параметри</h2>
+
+<p>Реалізовано автомат станів, годинник тіків детекції і контролер підвісу: функція <code>commandGimbal</code> обирає кутову швидкість на тіку, <code>integrateGimbal</code> застосовує її щокадру. Годинник переносить залишок часу між тіками, тому середня частота детекції точно дорівнює <code>detectHz</code>, а тривалість кадру обмежено 0,1 с. Панель параметрів перероблено на презентаційний компонент, що дозволило показати дві незалежні панелі — для цілі та для БпЛА. Параметри БпЛА наведено в таблиці 3.1.</p>
+
+<p class="tcap">Таблиця 3.1 – Параметри модуля БпЛА</p>
+<table>
+  <thead><tr><th style="width:21%">Параметр</th><th style="width:12%">Типово</th><th style="width:16%">Діапазон</th><th style="width:8%">Од.</th><th>Призначення</th></tr></thead>
+  <tbody>
+    <tr><td>posX, posZ / height</td><td class="c">0; 0 / 20</td><td class="c">±45 / 5…45</td><td class="c">м</td><td>Початкове положення і висота БпЛА</td></tr>
+    <tr><td>fov</td><td class="c">60</td><td class="c">20…100</td><td class="c">°</td><td>Вертикальний кут огляду камери (кадр 4:3)</td></tr>
+    <tr><td>gimbalKp / gimbalKd</td><td class="c">4 / 0,1</td><td class="c">0…20 / 0…2</td><td class="c">с<sup>−1</sup> / —</td><td>Коефіцієнти ПД-закону <i>K<sub>p</sub></i>, <i>K<sub>d</sub></i></td></tr>
+    <tr><td>maxRate</td><td class="c">90</td><td class="c">10…360</td><td class="c">°/с</td><td>Обмеження кутової швидкості підвісу</td></tr>
+    <tr><td>holdTime</td><td class="c">1,5</td><td class="c">0…10</td><td class="c">с</td><td>Час утримання напрямку в стані LOST</td></tr>
+    <tr><td>scanRate / scanTilt</td><td class="c">30 / −45</td><td class="c">5…180 / −85…−5</td><td class="c">°/с, °</td><td>Швидкість сканування і нахил під час пошуку</td></tr>
+    <tr><td>detectHz</td><td class="c">30</td><td class="c">1…60</td><td class="c">Гц</td><td>Частота детекції та керування</td></tr>
+    <tr><td>approachSpeed</td><td class="c">6</td><td class="c">0…20</td><td class="c">м/с</td><td>Швидкість наближення (0 — БпЛА нерухомий)</td></tr>
+    <tr><td>pngGain</td><td class="c">3</td><td class="c">1…6</td><td class="c">—</td><td>Навігаційна стала <i>K</i></td></tr>
+    <tr><td>detectMode</td><td class="c">geometry</td><td class="c">geometry / pixel</td><td class="c">—</td><td>Режим детекції (кнопка у вікні POV)</td></tr>
+  </tbody>
+</table>
+
+<h2>3.4 Інтеграція у тривимірну сцену</h2>
+
+<p>Створено компонент <code>FlyingObject.jsx</code>: модель БпЛА складається з корпусу, двох перехрещених балок і чотирьох напівпрозорих гвинтів; камера розташована на 0,3 м нижче корпусу і під час рендерингу POV не бачить його. Вікно POV показується площиною з текстурою FBO у компоненті <code>&lt;Hud&gt;</code> бібліотеки drei, а оверлей — HTML-полотном 320 × 240 з рамкою, прицілом, статусом і кнопкою GEOM / PIXEL; логіку малювання винесено в чисту функцію з тестами.</p>
+
+<p>Під час ручного тестування в браузері виявлено й виправлено дві вади: детекцію і керування переведено на тіки <code>detectHz</code> в обох режимах, а коефіцієнт повернення нахилу в режимі пошуку обмежено величиною 1/<i>T</i>, бо за низьких частот детекції фіксований коефіцієнт 2 с<sup>−1</sup> давав перерегулювання. Оновлено також документацію проєкту: опис архітектури і довідник параметрів.</p>
+
+<h2>3.5 Фізичне наближення до цілі</h2>
+
+<p>Для наближення до цілі модуль розширено за межі початкової специфікації: тіло БпЛА перетворено на кінематичне тіло Rapier, реалізовано модуль <code>guidanceController.js</code> за формулами (2.7)–(2.9) з дев'ятьма тестами, додано параметри <code>approachSpeed</code> і <code>pngGain</code>. Положення POV-камери тепер береться з поточних координат БпЛА, а зміна положення на панелі чи кнопка скидання телепортують БпЛА в задану точку й обнуляють стан наведення.</p>
+
+<h2>3.6 Тестування модуля</h2>
+
+<p>Розподіл тестів наведено в таблиці 3.2. Усі 81 тест у 10 файлах проходять приблизно за 0,4 с; покриття ядра становить 96,27&nbsp;% інструкцій, 95,09&nbsp;% розгалужень, 100&nbsp;% функцій і 95,78&nbsp;% рядків. Компоненти візуалізації перевіряються вручну в браузері за критеріями приймання специфікації.</p>
+
+<p class="tcap">Таблиця 3.2 – Модульні тести</p>
+<table>
+  <thead><tr><th style="width:27%">Модуль</th><th style="width:8%">Тестів</th><th>Що перевіряється</th><th style="width:11%">Рядки,&nbsp;%</th></tr></thead>
+  <tbody>
+    <tr><td>detection.js</td><td class="c">4</td><td>Центр рамки, перерахунок NDC у пікселі</td><td class="c">100</td></tr>
+    <tr><td>pixelDetector.js</td><td class="c">8</td><td>Рамка червоного блоку, ігнорування схожих кольорів, некоректний буфер</td><td class="c">100</td></tr>
+    <tr><td>geometryDetector.js</td><td class="c">7</td><td>Ціль перед і позаду камери, обрізання рамки, затулення</td><td class="c">100</td></tr>
+    <tr><td>occlusion.js</td><td class="c">7</td><td>Сценарії променя на фіктивному світі Rapier</td><td class="c">100</td></tr>
+    <tr><td>trackerState.js</td><td class="c">9</td><td>Усі переходи автомата, підтвердження, межа holdTime</td><td class="c">100</td></tr>
+    <tr><td>detectionClock.js</td><td class="c">10</td><td>Накопичення часу, тіки, обмеження Δt</td><td class="c">100</td></tr>
+    <tr><td>gimbalController.js</td><td class="c">19</td><td>Знаки, обмеження, сканування, утримання, замкнений контур</td><td class="c">100</td></tr>
+    <tr><td>guidanceController.js</td><td class="c">9</td><td>Кути LOS, закон PNG, мінімальна висота, перехоплення</td><td class="c">89,55</td></tr>
+    <tr><td>useFlyingObjectParams.js, drawPovOverlay.js</td><td class="c">8</td><td>Обмеження параметрів, скидання; малювання оверлею</td><td class="c">—</td></tr>
+    <tr><td><b>Разом</b></td><td class="c"><b>81</b></td><td colspan="2">Покриття ядра 95,78&nbsp;% рядків при порозі 80&nbsp;%</td></tr>
+  </tbody>
+</table>
+
+<!-- =============================== РОЗДІЛ 4 =============================== -->
+<h1>РОЗДІЛ 4<br>ЕКСПЕРИМЕНТАЛЬНІ ДОСЛІДЖЕННЯ</h1>
+
+<h2>4.1 Методика експериментів</h2>
+
+<p>Для кількісної оцінки модуля розроблено програму обчислювальних експериментів (каталог <code>docs/practice/experiments/</code>). Вона імпортує ті самі модулі <code>src/tracking/</code>, що й застосунок, і відтворює конвеєр рисунка 2.2 без графіки: 60 кадрів за секунду, детекція і керування на тіках <code>detectHz</code>, наведення щокадру. Використовується геометричний детектор, затулення задається функцією часу, а ціль рухається заданими траєкторіями, що забезпечує повну повторюваність. Якщо не зазначено інше, параметри типові (таблиця&nbsp;3.1), БпЛА розташований у точці (0; 20; 0) м.</p>
+
+<p>Основна метрика — кутова похибка супроводу <i>ε</i>: кут між оптичною віссю камери і напрямком на центр цілі. Визначаються час захоплення, середньоквадратична (СКП) і максимальна похибки в усталеному режимі (через 1&nbsp;с після захоплення) та кількість втрат цілі. Піксельний режим потребує WebGL, тому перевірявся в браузері якісно.</p>
+
+<h2>4.2 Вплив коефіцієнта K<sub>p</sub> на точність супроводу</h2>
+
+<p>Ціль рухається зі швидкістю 8 м/с по колу радіусом 15 м навколо точки під БпЛА (кутова швидкість <i>ω</i> = 30,6 °/с) або прямолінійно зі зміщенням за синусоїдою з амплітудою 6 м і періодом 5 с («змійка»). Результати наведено в таблиці 4.1 і на рисунку 4.1.</p>
+
+<p class="tcap">Таблиця 4.1 – Похибка супроводу залежно від K<sub>p</sub> (detectHz = 30 Гц)</p>
+<table>
+  <thead>
+    <tr><th rowspan="2" style="width:11%"><i>K<sub>p</sub></i>, с<sup>−1</sup></th><th colspan="3">Коло R = 15 м</th><th colspan="3">«Змійка»</th><th rowspan="2" style="width:13%"><i>ω</i>/<i>K<sub>p</sub></i>, °</th></tr>
+    <tr><th>СКП, °</th><th>макс., °</th><th>втрати</th><th>СКП, °</th><th>макс., °</th><th>втрати</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="c">0,5</td><td class="c">32,7*</td><td class="c">43,1*</td><td class="c">2</td><td class="c">25,5*</td><td class="c">39,9*</td><td class="c">1</td><td class="c">61,1</td></tr>
+    <tr><td class="c">1</td><td class="c">28,4</td><td class="c">30,5</td><td class="c">0</td><td class="c">21,1</td><td class="c">30,6</td><td class="c">0</td><td class="c">30,6</td></tr>
+    <tr><td class="c">2</td><td class="c">14,8</td><td class="c">15,3</td><td class="c">0</td><td class="c">12,3</td><td class="c">21,1</td><td class="c">0</td><td class="c">15,3</td></tr>
+    <tr><td class="c">4</td><td class="c">7,56</td><td class="c">7,64</td><td class="c">0</td><td class="c">6,69</td><td class="c">13,5</td><td class="c">0</td><td class="c">7,64</td></tr>
+    <tr><td class="c">8</td><td class="c">3,82</td><td class="c">3,82</td><td class="c">0</td><td class="c">3,54</td><td class="c">8,00</td><td class="c">0</td><td class="c">3,82</td></tr>
+    <tr><td class="c">16</td><td class="c">1,92</td><td class="c">1,92</td><td class="c">0</td><td class="c">1,82</td><td class="c">4,41</td><td class="c">0</td><td class="c">1,91</td></tr>
+  </tbody>
+</table>
+<p class="tnote">* Лише на інтервалах супроводу; ціль утримувалась 79&nbsp;% (коло) і 71&nbsp;% («змійка») часу.</p>
+
+<figure>
+<img src="figures/fig-4-2-kp-rms.svg" alt="" style="width:13.5cm">
+<figcaption>Рисунок 4.1 – Залежність похибки супроводу від K<sub>p</sub></figcaption>
+</figure>
+
+<p>Експеримент підтвердив формулу (2.6): для руху по колу похибка обернено пропорційна <i>K<sub>p</sub></i> і за <i>K<sub>p</sub></i> ≥ 2 с<sup>−1</sup> відрізняється від теоретичної в межах 3&nbsp;%; за <i>K<sub>p</sub></i> = 1 розбіжність зумовлена нелінійністю (2.2) за великих кутів. Коли відставання <i>ω</i>/<i>K<sub>p</sub></i> перевищує половину кута огляду (<i>K<sub>p</sub></i> = 0,5 с<sup>−1</sup>), ціль виходить за межі кадру. Для «змійки» максимальна похибка приблизно вдвічі більша за СКП через змінну кутову швидкість цілі.</p>
+
+<h2>4.3 Стійкість дискретного контуру керування</h2>
+
+<p>Для перевірки умови (2.5) виконано 30 прогонів тривалістю 20 с із нерухомою ціллю на відстані 15 м для всіх поєднань <i>K<sub>p</sub></i> ∈ {1; 2; 4; 8; 12; 20} с<sup>−1</sup> і <code>detectHz</code> ∈ {1; 2; 5; 10; 30} Гц. Режим вважався стійким, якщо в останні 6 с похибка не перевищувала 1° (рисунки 4.2, 4.3).</p>
+
+<figure>
+<img src="figures/fig-4-3-step.svg" alt="" style="width:13.5cm">
+<figcaption>Рисунок 4.2 – Перехідні процеси наведення на нерухому ціль</figcaption>
+</figure>
+
+<figure>
+<img src="figures/fig-4-4-stability.svg" alt="" style="width:13.5cm">
+<figcaption>Рисунок 4.3 – Карта стійкості контуру керування підвісом</figcaption>
+</figure>
+
+<p>Класифікація всіх 30 прогонів збіглася з теоретичною межею <i>K<sub>p</sub>T</i> &lt; 1,8: за <i>K<sub>p</sub>T</i> = 1,6 процес згасає, а за <i>K<sub>p</sub>T</i> = 2,0 виникають незгасні коливання (4,6° за 10 Гц і 23° за 2 Гц). За більших <i>K<sub>p</sub>T</i> амплітуду обмежує насичення <code>maxRate</code>, а за частот 1–2 Гц ціль виходить із кадру. Зниження частоти детекції також подовжує захоплення — від 5,5 с за 30 Гц до 9,0 с за 1 Гц. Типове поєднання (4 с<sup>−1</sup>, 30 Гц) має більш ніж тринадцятикратний запас стійкості.</p>
+
+<h2>4.4 Проліт цілі під БпЛА</h2>
+
+<p>Поблизу надиру азимут лінії візування змінюється найшвидше: для руху зі швидкістю <i>v</i> на відстані <i>d</i> від надиру пікова швидкість дорівнює <i>v</i>/<i>d</i>. Специфікація відносила цей випадок до ризиків, тому його перевірено для <i>v</i>&nbsp;=&nbsp;8&nbsp;м/с (таблиця&nbsp;4.2).</p>
+
+<p class="tcap">Таблиця 4.2 – Супровід цілі під час прольоту поблизу надиру</p>
+<table>
+  <thead>
+    <tr><th rowspan="2" style="width:9%"><i>d</i>, м</th><th rowspan="2" style="width:13%"><i>v</i>/<i>d</i>, °/с</th><th colspan="2"><i>ω</i><sub>max</sub> = 45 °/с</th><th colspan="2"><i>ω</i><sub>max</sub> = 90 °/с</th><th colspan="2"><i>ω</i><sub>max</sub> = 180 °/с</th></tr>
+    <tr><th>втрати</th><th><i>ε</i><sub>max</sub>, °</th><th>втрати</th><th><i>ε</i><sub>max</sub>, °</th><th><i>ε</i><sub>max</sub>, °</th><th>пікова <i>ω<sub>ψ</sub></i>, °/с</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="c">0,5</td><td class="c">917</td><td class="c">1</td><td class="c">42,0</td><td class="c">0</td><td class="c">37,6</td><td class="c">35,0</td><td class="c">140</td></tr>
+    <tr><td class="c">1</td><td class="c">458</td><td class="c">1</td><td class="c">39,8</td><td class="c">0</td><td class="c">32,9</td><td class="c">31,1</td><td class="c">124</td></tr>
+    <tr><td class="c">2</td><td class="c">229</td><td class="c">0</td><td class="c">36,3</td><td class="c">0</td><td class="c">26,8</td><td class="c">26,2</td><td class="c">104</td></tr>
+    <tr><td class="c">5</td><td class="c">92</td><td class="c">0</td><td class="c">22,8</td><td class="c">0</td><td class="c">17,5</td><td class="c">17,5</td><td class="c">69</td></tr>
+    <tr><td class="c">8</td><td class="c">57</td><td class="c">0</td><td class="c">13,6</td><td class="c">0</td><td class="c">12,7</td><td class="c">12,7</td><td class="c">50</td></tr>
+  </tbody>
+</table>
+
+<p>Ризик підтвердився лише частково. За типового <i>ω</i><sub>max</sub> = 90 °/с ціль не втрачається навіть за <i>d</i> = 0,5 м: поблизу надиру нахил упирається в межу −85°, а кут огляду 60° охоплює надир, тож ціль лишається в кадрі, хоча похибка короткочасно зростає до 27–38°. Втрата (близько 1,5 с) виникає лише за <i>ω</i><sub>max</sub> = 45 °/с і <i>d</i> ≤ 1 м. Збільшення <i>ω</i><sub>max</sub> понад 140 °/с нічого не змінює, оскільки команду обмежує сам закон (2.3): <i>K<sub>p</sub></i>·<i>ε</i><sub>max</sub> ≈ 4 · 35° = 140 °/с.</p>
+
+<h2>4.5 Тимчасове затулення цілі</h2>
+
+<p>Затулення моделювалося інтервалом тривалістю <i>τ</i>, протягом якого ціль невидима; <code>holdTime</code> = 1,5 с, ціль рухається прямолінійно (таблиця 4.3).</p>
+
+<p class="tcap">Таблиця 4.3 – Відновлення супроводу після затулення</p>
+<table>
+  <thead>
+    <tr><th rowspan="2" style="width:14%"><i>τ</i>, с</th><th colspan="2"><i>v</i> = 6 м/с</th><th colspan="2"><i>v</i> = 14 м/с</th></tr>
+    <tr><th>стан після затулення</th><th>затримка, с</th><th>стан після затулення</th><th>затримка, с</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="c">0,8</td><td class="c">LOST</td><td class="c">0,02</td><td class="c">LOST</td><td class="c">0,02</td></tr>
+    <tr><td class="c">1,4</td><td class="c">LOST</td><td class="c">0,02</td><td class="c">LOST</td><td class="c">1,75</td></tr>
+    <tr><td class="c">1,6</td><td class="c">SEARCH</td><td class="c">0,08</td><td class="c">SEARCH</td><td class="c">1,55</td></tr>
+    <tr><td class="c">2,5</td><td class="c">SEARCH</td><td class="c">0,08</td><td class="c">SEARCH</td><td class="c">0,65</td></tr>
+  </tbody>
+</table>
+
+<p>Якщо <i>τ</i> &lt; <code>holdTime</code> і ціль не виходить із кадру, супровід відновлюється з першого тіку; після довшого затулення автомат проходить через SEARCH і потребує трьох підтверджень (0,08 с). Швидка ціль (14 м/с) за 1,4 с зміщується на ≈ 20 м і залишає кадр нерухомої камери, тож затримка визначається тим, коли сканування знову знайде ціль. Це обґрунтовує прогнозування руху цілі (наприклад, фільтром Калмана) як напрям подальшої роботи.</p>
+
+<h2>4.6 Наближення до цілі методом пропорційної навігації</h2>
+
+<p>Наближення досліджено в повному контурі (пошук, захоплення, супровід, політ зі швидкістю 6 м/с) для чотирьох сценаріїв руху цілі та <i>K</i> від 1 до 5 (таблиця 4.4, рисунок 4.4).</p>
+
+<p class="tcap">Таблиця 4.4 – Наближення до цілі: час від захоплення до перехоплення, с / довжина траєкторії, м</p>
+<table>
+  <thead><tr><th style="width:24%">Рух цілі</th><th style="width:11%">Захоплен&shy;ня, с</th><th><i>K</i>&nbsp;=&nbsp;1</th><th><i>K</i>&nbsp;=&nbsp;3</th><th><i>K</i>&nbsp;=&nbsp;5</th><th style="width:19%">Зміна при <i>K</i>&nbsp;=&nbsp;3 щодо <i>K</i>&nbsp;=&nbsp;1,&nbsp;%</th></tr></thead>
+  <tbody>
+    <tr><td>Нерухома, (15;&nbsp;10)&nbsp;м</td><td class="c">5,88</td><td class="c">4,75 / 25,6</td><td class="c">4,75 / 25,6</td><td class="c">4,75 / 25,6</td><td class="c">0 / 0</td></tr>
+    <tr><td>Пряма, 2,9&nbsp;м/с</td><td class="c">4,92</td><td class="c">8,76 / 49,6</td><td class="c">8,31 / 46,9</td><td class="c">8,26 / 46,6</td><td class="c">−5,1 / −5,4</td></tr>
+    <tr><td>Коло R&nbsp;=&nbsp;8&nbsp;м, 3&nbsp;м/с</td><td class="c">4,88</td><td class="c">4,15 / 21,9</td><td class="c">4,00 / 21,0</td><td class="c">4,00 / 21,0</td><td class="c">−3,6 / −4,1</td></tr>
+    <tr><td>Поперечна, 4&nbsp;м/с</td><td class="c">0,08</td><td class="c">6,02 / 33,1</td><td class="c">4,97 / 26,8</td><td class="c">4,87 / 26,2</td><td class="c">−17,5 / −19,0</td></tr>
+  </tbody>
+</table>
+
+<figure>
+<img src="figures/fig-4-5-png.svg" alt="" style="width:14.5cm">
+<figcaption>Рисунок 4.4 – Траєкторії БпЛА (вид згори) під час перехоплення цілі, що рухається поперек лінії візування</figcaption>
+</figure>
+
+<p>В усіх 20 прогонах ціль перехоплено без жодної втрати супроводу під час польоту, тобто підвіс і наведення працюють узгоджено попри рух камери. Для нерухомої цілі лінія візування не обертається, і всі <i>K</i> дають однаковий результат. Перевага PNG над чистим переслідуванням зростає з поперечною швидкістю цілі: для поперечного руху час скорочується на 17,5&nbsp;%, а довжина траєкторії — на 19&nbsp;%. Збільшення <i>K</i> понад 3 дає виграш не більше 2,5&nbsp;%, що узгоджується з рекомендованим діапазоном 3–5 [6, 7] і обґрунтовує типове <i>K</i>&nbsp;=&nbsp;3.</p>
+
+<h2>4.7 Обчислювальна вартість алгоритмів</h2>
+
+<p>Час виконання функцій ядра виміряно в Node.js 24 на комп'ютері автора. Повний перегляд кадру 320 × 240 піксельним детектором триває 208–214 мкс (1,3&nbsp;% бюджету кадру 16,7 мс, а за частоти 30 Гц — 0,6&nbsp;% процесорного часу); геометрична проєкція без перевірки затулення — 1,3 мкс; крок автомата разом із законом підвісу — 0,1 мкс; крок наведення PNG — 0,2 мкс. Отже, основні витрати піксельного режиму в браузері пов'язані не з аналізом, а із синхронним зчитуванням пікселів із графічного процесора, тому буфер кадру зроблено малим, а частоту детекції — обмеженою.</p>
+
+<!-- =============================== ВИСНОВКИ =============================== -->
+<h1>ВИСНОВКИ</h1>
+
+<p>Під час практики у вересні 2026 року розроблено модуль БпЛА-спостерігача для симулятора відстеження наземних цілей, що розширює систему курсової роботи до замкненого контуру «ціль — камера — керування — політ» і є складовою дипломної роботи. Основні результати:</p>
+<ol class="num">
+  <li>Проаналізовано вихідну систему, сформульовано вимоги та підготовлено специфікацію модуля з критеріями приймання і переліком ризиків.</li>
+  <li>Спроєктовано архітектуру «чисте ядро — тонка оболонка»: вісім модулів <code>src/tracking/</code> не залежать від React і сцени, що забезпечило тестованість і переносність алгоритмів.</li>
+  <li>Реалізовано геометричний і піксельний методи виявлення цілі, автомат станів SEARCH / TRACKING / LOST, ПД-закон керування двоосьовим підвісом із дискретною частотою детекції та наближення до цілі методом пропорційної навігації.</li>
+  <li>Написано 81 модульний тест; покриття ядра становить 95,78&nbsp;% рядків при порозі 80&nbsp;%.</li>
+  <li>Експерименти показали, що усталена похибка супроводу відповідає залежності <i>ω</i>/<i>K<sub>p</sub></i> (у межах 3&nbsp;%), межа стійкості <i>K<sub>p</sub>T</i> &lt; 2 − 2<i>K<sub>d</sub></i> підтверджується на всіх 30 поєднаннях параметрів, проліт цілі під БпЛА за типових налаштувань не спричиняє втрати, а PNG скорочує час перехоплення маневрової цілі до 17,5&nbsp;% порівняно з чистим переслідуванням.</li>
+</ol>
+
+<p>Під час практики закріплено навички аналізу вимог, проєктування модульної архітектури, розробки через тестування, роботи з тривимірною графікою і фізичним рушієм, а також постановки обчислювального експерименту та інтерпретації його результатів з позицій теорії керування.</p>
+
+<p>Напрями подальшої роботи в межах дипломної роботи: прогнозування руху цілі фільтром Калмана для супроводу під час затулень; нейромережевий детектор, навчений на синтетичних кадрах симулятора; пошук цілі рухомим БпЛА за маршрутом; експорт еталонних траєкторій для порівняння алгоритмів.</p>
+
+<!-- =========================== СПИСОК ДЖЕРЕЛ ============================ -->
+<h1>СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ</h1>
+
+<ol class="num refs">
+  <li>Shakhatreh H., Sawalmeh A. H., Al-Fuqaha A. et al. Unmanned Aerial Vehicles (UAVs): A Survey on Civil Applications and Key Research Challenges. <i>IEEE Access</i>. 2019. Vol. 7. P. 48572–48634.</li>
+  <li>Mueller M., Smith N., Ghanem B. A Benchmark and Simulator for UAV Tracking. <i>Computer Vision – ECCV 2016</i>. Cham : Springer, 2016. P. 445–461.</li>
+  <li>Shah S., Dey D., Lovett C., Kapoor A. AirSim: High-Fidelity Visual and Physical Simulation for Autonomous Vehicles. <i>Field and Service Robotics</i>. Cham : Springer, 2018. P. 621–635.</li>
+  <li>Програмна система моделювання керованого руху наземної цілі у тривимірному середовищі : пояснювальна записка до курсової роботи. Черкаси : ЧНУ ім. Б. Хмельницького, 2026.</li>
+  <li>ДСТУ 3008:2015. Інформація та документація. Звіти у сфері науки і техніки. Структура та правила оформлювання. Київ : ДП «УкрНДНЦ», 2016.</li>
+  <li>Zarchan P. Tactical and Strategic Missile Guidance. 6th ed. Reston : AIAA, 2012.</li>
+  <li>Precise Interception Flight Targets by Image-based Visual Servoing of Multicopter : preprint. arXiv:2409.17497. 2024. URL: https://arxiv.org/abs/2409.17497 (дата звернення: 28.09.2026).</li>
+  <li>Hartley R., Zisserman A. Multiple View Geometry in Computer Vision. 2nd ed. Cambridge : Cambridge University Press, 2004. 655 p.</li>
+  <li>Franklin G. F., Powell J. D., Workman M. L. Digital Control of Dynamic Systems. 3rd ed. Menlo Park : Addison-Wesley, 1998. 742 p.</li>
+  <li>Hilkert J. M. Inertially Stabilized Platform Technology: Concepts and Principles. <i>IEEE Control Systems Magazine</i>. 2008. Vol. 28, No. 1. P. 26–46.</li>
+  <li>Chaumette F., Hutchinson S. Visual Servo Control. Part I: Basic Approaches. <i>IEEE Robotics &amp; Automation Magazine</i>. 2006. Vol. 13, No. 4. P. 82–90.</li>
+  <li>Three.js : documentation. URL: https://threejs.org/docs/ (дата звернення: 02.09.2026).</li>
+  <li>React Three Fiber : documentation. URL: https://r3f.docs.pmnd.rs/ (дата звернення: 02.09.2026).</li>
+  <li>Rapier Physics Engine : documentation. URL: https://rapier.rs/docs/ (дата звернення: 08.09.2026).</li>
+</ol>
+
+</body>
+</html>
